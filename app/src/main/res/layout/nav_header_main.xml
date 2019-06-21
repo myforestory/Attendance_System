@@ -13,20 +13,18 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <TextView
-        android:id="@+id/aloha"
+        android:id="@+id/user_name"
         android:layout_width="375dp"
         android:layout_height="wrap_content"
-        android:text="曾鄢畇"
         android:textColor="@android:color/white"
         android:textSize="@dimen/dp_42" />
     <!--android:background="@drawable/textlines"-->
 
     <TextView
+        android:id="@+id/user_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
         android:layout_marginBottom="@dimen/dp_42"
-        android:text="sou@marcopolos.co.jp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColor="@android:color/white"
         android:textSize="@dimen/dp_16" />

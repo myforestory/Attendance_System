@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.support.v4.view.GravityCompat;
@@ -34,6 +35,9 @@ public class MainActivity extends AppCompatActivity
 
     private ListView lvTeam;
     private List<Team> teamList;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private CharSequence mDrawerTitle;
+    private CharSequence mTitle;
 
 
     @Override
@@ -59,6 +63,32 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
+        mTitle = mDrawerTitle = getTitle();
+
+        mDrawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar
+                , R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+
+            public void onDrawerClosed(View view) {
+                setTitle(mTitle);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+
+            public void onDrawerOpened(View drawerView) {
+                TextView userNameTextView = (TextView) findViewById(R.id.user_name);
+                TextView userEmailTextView = (TextView) findViewById(R.id.user_email);
+                SpannableString nameString = new SpannableString("曾鄢畇");
+                nameString.setSpan(new UnderlineSpan(), 0, nameString.length(), 0);
+                userNameTextView.setText(nameString);
+                SpannableString emailString = new SpannableString("sou@marcopolos.co.jp");
+                userEmailTextView.setText(emailString);
+                setTitle(mDrawerTitle);
+                invalidateOptionsMenu();
+                 // creates call to onPrepareOptionsMenu()
+            }
+
+        };
+        drawer.addDrawerListener(mDrawerToggle);
+
         initTeams();
         findViews();
     }
@@ -72,10 +102,6 @@ public class MainActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
-        TextView textView = (TextView) findViewById(R.id.aloha);
-        SpannableString content = new SpannableString("Content");
-        content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
-        textView.setText(content);
     }
 
     @Override
@@ -125,6 +151,8 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
 
     private void initTeams() {
         // teamList儲存ListView各列對應的資料

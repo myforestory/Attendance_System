@@ -6,14 +6,15 @@
     <group>
         <item
             android:id="@+id/back_home"
-            android:icon="@drawable/ic_menu_home"
+            android:icon="@drawable/ic_menu_home_white"
             android:title="@string/menu_home" />
     </group>
     <group android:id="@+id/log_out_menu">
         <item
             android:id="@+id/log_out"
+            android:tint="@android:color/white"
             android:icon="@drawable/ic_menu_logout_white"
-            android:title="@string/menu_home" />
+            android:title="@string/menu_logout" />
     </group>
 
 </menu>
