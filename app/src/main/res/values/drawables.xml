@@ -5,4 +5,10 @@
     <item name="ic_menu_manage" type="drawable">@android:drawable/ic_menu_manage</item>
     <item name="ic_menu_share" type="drawable">@android:drawable/ic_menu_share</item>
     <item name="ic_menu_send" type="drawable">@android:drawable/ic_menu_send</item>
+    <item name="ic_btn_speak_now" type="drawable">@android:drawable/ic_btn_speak_now</item>
+    <item name="ic_menu_set_as" type="drawable">@android:drawable/ic_menu_set_as</item>
+    <item name="ic_menu_mylocation" type="drawable">@android:drawable/ic_menu_mylocation</item>
+    <item name="ic_menu_home" type="drawable">@drawable/ic_menu_logout_white</item>
+    <item name="ic_dialog_info" type="drawable">@android:drawable/ic_dialog_info</item>
+    <item name="ic_menu_myplaces" type="drawable">@android:drawable/ic_menu_myplaces</item>
 </resources>
