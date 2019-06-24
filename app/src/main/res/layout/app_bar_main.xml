@@ -9,39 +9,74 @@
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
+            android:baselineAligned="false"
+            android:orientation="vertical"
             app:popupTheme="@style/AppTheme.PopupOverlay"
             app:subtitleTextAppearance="@dimen/sp_20">
-            <TextView
-                android:layout_width="wrap_content"
+
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Toolbar Title"
-                android:layout_gravity="center"
-                android:id="@+id/toolbar_title" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Toolbar Title"
-                android:layout_gravity="center"
-                android:id="@+id/toolbar_title2222" />
+                android:layout_below="@+id/toolbar"
+                android:fitsSystemWindows="true"
+                android:gravity="bottom"
+                android:scaleType="centerCrop">
+
+
+                <TextView
+                    android:id="@+id/titleDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:paddingRight="@dimen/dp_100"
+                    android:text="2019年6月7日"
+                    android:textColor="@color/colorMainWhite"
+                    android:textSize="@dimen/dp_20" />
+
+                <Button
+                    android:id="@+id/button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignRight="@+id/titleDate"
+                    android:background="@drawable/button_shape"
+                    android:gravity="center"
+                    android:text="出勤"
+                    android:textColor="@color/colorMainWhite"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/titleTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/titleDate"
+                    android:gravity="center"
+                    android:paddingRight="@dimen/dp_100"
+                    android:text="20:41:35"
+                    android:textColor="@color/colorMainWhite"
+                    android:textSize="14sp" />
+
+            </RelativeLayout>
+
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
 
     <include layout="@layout/content_main" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+    <!--<android.support.design.widget.FloatingActionButton-->
+        <!--android:id="@+id/fab"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="bottom|end"-->
+        <!--android:layout_margin="100dp"-->
+        <!--app:srcCompat="@android:drawable/ic_dialog_email" />-->
 
 </android.support.design.widget.CoordinatorLayout>

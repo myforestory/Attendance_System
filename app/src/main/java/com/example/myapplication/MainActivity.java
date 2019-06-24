@@ -27,8 +27,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Timer;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -51,14 +56,14 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+//        FloatingActionButton fab = findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -95,6 +100,7 @@ public class MainActivity extends AppCompatActivity
 
         initTeams();
         findViews();
+        updateTitleTime();
     }
 
 
@@ -123,9 +129,9 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -254,4 +260,45 @@ public class MainActivity extends AppCompatActivity
             TextView tvName, tvId;
         }
     }
+
+    public void setTitleCurrentTime(){
+        TextView titleDate = (TextView) findViewById(R.id.titleDate);
+        TextView titleTime = (TextView) findViewById(R.id.titleTime);
+
+        Calendar c = Calendar.getInstance();
+
+        SimpleDateFormat df = new SimpleDateFormat("yyyy年MM月dd日");
+        SimpleDateFormat tf = new SimpleDateFormat("HH:mm:ss");
+        String formattedDate = df.format(c.getTime());
+        String formattedTime = tf.format(c.getTime());
+
+        titleDate.setText(formattedDate);
+        titleTime.setText(formattedTime);
+
+
+    }
+
+    public void updateTitleTime(){
+        Thread thread = new Thread() {
+
+            @Override
+            public void run() {
+                try {
+                    while(!isInterrupted()){
+                        Thread.sleep(1000);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                setTitleCurrentTime();
+                            }
+                        });
+                    }
+                } catch(InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        thread.start();
+    }
+
 }
