@@ -32,13 +32,19 @@
         android:text="土"
         android:textSize="@dimen/dp_16" />
 
+    <View
+        android:layout_width="10dp"
+        android:layout_height="wrap_content"
+        android:background="@color/colorMainBlack"
+        />
+
     <ImageView
         android:id="@+id/imgStr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_90"
         android:layout_marginTop="@dimen/dp_8"
-        android:contentDescription="imageStart"
+        android:contentDescription="@string/main_disability_StrImg"
         app:srcCompat="@android:drawable/ic_menu_slideshow" />
 
     <TextView
@@ -58,7 +64,7 @@
         android:layout_alignBottom="@id/imgStr"
         android:layout_marginStart="@dimen/dp_220"
         android:padding="@dimen/dp_6"
-        android:contentDescription="imageEnd"
+        android:contentDescription="@string/main_disability_endImg"
         app:srcCompat="@android:drawable/ic_lock_power_off" />
 
     <TextView
@@ -66,7 +72,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/imgEnd"
-        android:layout_toRightOf="@id/imgEnd"
+        android:layout_toEndOf="@id/imgEnd"
         android:padding="6dp"
         android:text="18:30"
         android:textSize="@dimen/dp_24" />
@@ -81,9 +87,19 @@
         android:text="8:00"
         android:textSize="@dimen/dp_20" />
 
-
-
-
+    <TextView
+        android:id="@+id/tvDiscretion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/imgStr"
+        android:layout_below="@id/imgStr"
+        android:padding="6dp"
+        android:layout_marginRight="@dimen/dp_80"
+        android:text="アンドロイド10倍CFDホーム画面ロードのバグ修正"
+        android:textSize="@dimen/dp_12"
+        android:singleLine="false"
+        android:maxLines="10"
+        android:maxEms="500"/>
 
 
 

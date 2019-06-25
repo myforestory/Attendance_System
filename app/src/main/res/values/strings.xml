@@ -13,5 +13,8 @@
     <string name="menu_tools">Tools</string>
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
-    <String name=""></String>
+
+    <string name="main_disability_StrImg">imageStr</string>
+    <string name="main_disability_endImg">imageEnd</string>
+
 </resources>

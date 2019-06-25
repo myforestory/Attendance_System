@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.support.v4.view.GravityCompat;
@@ -35,6 +36,8 @@ public class MainActivity extends AppCompatActivity
 
     private ListView lvTeam;
     private List<Team> teamList;
+    private ListView lvMainInfo;
+    private List<MainInfo> mainInfoList;
     private ActionBarDrawerToggle mDrawerToggle;
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
@@ -93,7 +96,8 @@ public class MainActivity extends AppCompatActivity
         };
         drawer.addDrawerListener(mDrawerToggle);
 
-        initTeams();
+        //initTeams();
+        initMainInfo();
         findViews();
         updateTitleTime();
     }
@@ -159,6 +163,7 @@ public class MainActivity extends AppCompatActivity
 
 
 
+
     private void initTeams() {
         // teamList儲存ListView各列對應的資料
         teamList = new ArrayList<>();
@@ -174,7 +179,40 @@ public class MainActivity extends AppCompatActivity
         teamList.add(new Team(10, 4, "坦帕灣光芒"));
     }
 
+    private void initMainInfo() {
+        // MainInfo儲存ListView各列對應的資料
+        mainInfoList = new ArrayList<>();
+        mainInfoList.add(new MainInfo("1", "土", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
+        mainInfoList.add(new MainInfo("2", "日", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
+        mainInfoList.add(new MainInfo("3", "月", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
+        mainInfoList.add(new MainInfo("4", "火", "9:30", "20:30", "10:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
+        mainInfoList.add(new MainInfo("5", "水", "9:30", "19:30", "9:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
+        mainInfoList.add(new MainInfo("6", "木", "9:30", "18:30", "8:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
+        mainInfoList.add(new MainInfo("7", "金", "9:30", "18:30", "8:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
+        mainInfoList.add(new MainInfo("8", "土", "9:30", "18:30", "8:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
+        mainInfoList.add(new MainInfo("9", "日", "9:30", "20:30", "10:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
+        mainInfoList.add(new MainInfo("10", "月", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
+        mainInfoList.add(new MainInfo("11", "火", "9:30", "19:00", "8:30", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
+        mainInfoList.add(new MainInfo("12", "水", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
+        mainInfoList.add(new MainInfo("13", "木", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
+        mainInfoList.add(new MainInfo("14", "金", "9:30", "20:30", "10:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
+        mainInfoList.add(new MainInfo("15", "土", "9:30", "18:30", "8:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
+    }
+
     public void findViews() {
+        lvMainInfo = (ListView) findViewById(R.id.lvTeam);
+        lvMainInfo.setAdapter(new MainInfoAdapter(this, mainInfoList));
+        lvMainInfo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                MainInfo mainInfo = (MainInfo) parent.getItemAtPosition(position);
+                String info = mainInfo.getDate();
+                Toast.makeText(MainActivity.this, info, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    public void findViews1() {
         lvTeam = (ListView) findViewById(R.id.lvTeam);
         // 呼叫setAdapter()方法設定掌控ListView內容物的Adapter
         lvTeam.setAdapter(new TeamAdapter(this, teamList));
@@ -190,6 +228,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
     }
+
 
     private class TeamAdapter extends BaseAdapter {
         private LayoutInflater layoutInflater;
@@ -233,7 +272,7 @@ public class MainActivity extends AppCompatActivity
             ViewHolder holder;
             if (convertView == null) {
                 holder = new ViewHolder();
-                convertView = layoutInflater.inflate(R.layout.listview_team, parent, false);
+                convertView = layoutInflater.inflate(R.layout.listview_maininfo, parent, false);
                 holder.ivLogo = (TextView) convertView.findViewById(R.id.tvDate);
                 holder.tvId = (TextView) convertView.findViewById(R.id.tvDay);
                 holder.tvName = (TextView) convertView.findViewById(R.id.tvStrTime);
@@ -256,6 +295,65 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    private class MainInfoAdapter extends BaseAdapter {
+        private LayoutInflater layoutInflater;
+        private List<MainInfo> mainInfoList;
+
+	    public MainInfoAdapter(Context context, List<MainInfo> mainInfoList) {
+            this.mainInfoList = mainInfoList;
+
+            layoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+            //same way
+            //layoutInflater = LayoutInflater.from(context);
+        }
+
+        @Override
+        public int getCount() {
+            return mainInfoList.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return mainInfoList.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return Integer.valueOf(mainInfoList.get(position).getDate());
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+	        ViewHolder holder;
+            if(convertView == null) {
+                holder = new ViewHolder();
+                convertView = layoutInflater.inflate(R.layout.listview_maininfo, parent, false);
+                holder.tvDate = (TextView) convertView.findViewById(R.id.tvDate);
+                holder.tvDay = (TextView) convertView.findViewById(R.id.tvDay);
+                holder.tvStrTime = (TextView) convertView.findViewById(R.id.tvStrTime);
+                holder.tvEndTime = (TextView) convertView.findViewById(R.id.tvEndTime);
+                holder.tvTotalTime = (TextView) convertView.findViewById(R.id.tvTotalTime);
+                holder.tvDiscretion = (TextView) convertView.findViewById(R.id.tvDiscretion);
+                convertView.setTag(holder);
+            } else {
+                holder = (ViewHolder) convertView.getTag();
+            }
+            MainInfo maininfo = mainInfoList.get(position);
+            holder.tvDate.setText(maininfo.getDate());
+            holder.tvDay.setText(maininfo.getDay());
+            holder.tvStrTime.setText(maininfo.getStrTime());
+            holder.tvEndTime.setText(maininfo.getEndTime());
+            holder.tvTotalTime.setText(maininfo.getTotalTime());
+            holder.tvDiscretion.setText(maininfo.getDiscretion());
+
+            return convertView;
+        }
+
+        private class ViewHolder {
+            TextView tvDate, tvDay, tvStrTime, tvEndTime, tvTotalTime, tvDiscretion;
+        }
+    }
+
     public void setTitleCurrentTime(){
         TextView titleDate = (TextView) findViewById(R.id.titleDate);
         TextView titleTime = (TextView) findViewById(R.id.titleTime);
@@ -269,8 +367,6 @@ public class MainActivity extends AppCompatActivity
 
         titleDate.setText(formattedDate);
         titleTime.setText(formattedTime);
-
-
     }
 
     public void updateTitleTime(){
