@@ -37,7 +37,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:paddingRight="@dimen/dp_100"
-                    android:text="2019年6月7日"
+                    android:text=""
                     android:textColor="@color/colorMainWhite"
                     android:textSize="@dimen/dp_20" />
 
@@ -59,7 +59,7 @@
                     android:layout_below="@+id/titleDate"
                     android:gravity="center"
                     android:paddingRight="@dimen/dp_100"
-                    android:text="20:41:35"
+                    android:text=""
                     android:textColor="@color/colorMainWhite"
                     android:textSize="14sp" />
 

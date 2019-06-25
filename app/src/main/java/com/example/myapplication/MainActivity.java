@@ -1,13 +1,9 @@
 package com.example.myapplication;
 
 import android.content.Context;
-import android.graphics.Paint;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.support.v4.view.GravityCompat;
@@ -22,18 +18,17 @@ import android.view.Menu;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Timer;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -239,9 +234,9 @@ public class MainActivity extends AppCompatActivity
             if (convertView == null) {
                 holder = new ViewHolder();
                 convertView = layoutInflater.inflate(R.layout.listview_team, parent, false);
-                holder.ivLogo = (TextView) convertView.findViewById(R.id.ivLogo);
-                holder.tvId = (TextView) convertView.findViewById(R.id.tvId);
-                holder.tvName = (TextView) convertView.findViewById(R.id.tvName);
+                holder.ivLogo = (TextView) convertView.findViewById(R.id.tvDate);
+                holder.tvId = (TextView) convertView.findViewById(R.id.tvDay);
+                holder.tvName = (TextView) convertView.findViewById(R.id.tvStrTime);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
@@ -265,7 +260,7 @@ public class MainActivity extends AppCompatActivity
         TextView titleDate = (TextView) findViewById(R.id.titleDate);
         TextView titleTime = (TextView) findViewById(R.id.titleTime);
 
-        Calendar c = Calendar.getInstance();
+        Calendar c = new GregorianCalendar(TimeZone.getTimeZone("GMT-11:00"), Locale.US);
 
         SimpleDateFormat df = new SimpleDateFormat("yyyy年MM月dd日");
         SimpleDateFormat tf = new SimpleDateFormat("HH:mm:ss");

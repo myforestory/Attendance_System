@@ -1,28 +1,90 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/ivLogo"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_marginLeft="10dp"
-        android:layout_gravity="center_vertical"
-        android:padding="6dp" />
+    <!--<View-->
+    <!--android:id="@+id/divider2"-->
+    <!--android:layout_width="1dp"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_weight="1"-->
+    <!--android:background="@color/colorMainGrey"-->
+    <!--android:visibility="visible" />-->
 
     <TextView
-        android:id="@+id/tvId"
+        android:id="@+id/tvDate"
+        android:layout_width="@dimen/dp_32"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_12"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_8"
+        android:text="1"
+        android:textSize="@dimen/dp_32" />
+
+    <TextView
+        android:id="@+id/tvDay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:padding="6dp" />
+        android:layout_alignBaseline="@id/tvDate"
+        android:layout_toEndOf="@+id/tvDate"
+        android:text="土"
+        android:textSize="@dimen/dp_16" />
 
-    <TextView
-        android:id="@+id/tvName"
+    <ImageView
+        android:id="@+id/imgStr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:padding="6dp" />
+        android:layout_marginStart="@dimen/dp_90"
+        android:layout_marginTop="@dimen/dp_8"
+        android:contentDescription="imageStart"
+        app:srcCompat="@android:drawable/ic_menu_slideshow" />
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/tvStrTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/imgStr"
+        android:layout_toEndOf="@id/imgStr"
+        android:padding="6dp"
+        android:text="9:30"
+        android:textSize="@dimen/dp_24" />
+
+    <ImageView
+        android:id="@+id/imgEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/imgStr"
+        android:layout_marginStart="@dimen/dp_220"
+        android:padding="@dimen/dp_6"
+        android:contentDescription="imageEnd"
+        app:srcCompat="@android:drawable/ic_lock_power_off" />
+
+    <TextView
+        android:id="@+id/tvEndTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/imgEnd"
+        android:layout_toRightOf="@id/imgEnd"
+        android:padding="6dp"
+        android:text="18:30"
+        android:textSize="@dimen/dp_24" />
+
+    <TextView
+        android:id="@+id/tvTotalTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBaseline="@id/tvDay"
+        android:padding="6dp"
+        android:text="8:00"
+        android:textSize="@dimen/dp_20" />
+
+
+
+
+
+
+
+</RelativeLayout>
