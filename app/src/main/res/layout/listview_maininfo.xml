@@ -21,6 +21,7 @@
         android:layout_marginTop="@dimen/dp_16"
         android:paddingBottom="@dimen/dp_8"
         android:text="1"
+        android:textColor="@color/colorMainBlack"
         android:textSize="@dimen/dp_32" />
 
     <TextView
@@ -30,13 +31,8 @@
         android:layout_alignBaseline="@id/tvDate"
         android:layout_toEndOf="@+id/tvDate"
         android:text="土"
+        android:textColor="@color/colorMainBlack"
         android:textSize="@dimen/dp_16" />
-
-    <View
-        android:layout_width="10dp"
-        android:layout_height="wrap_content"
-        android:background="@color/colorMainBlack"
-        />
 
     <ImageView
         android:id="@+id/imgStr"
@@ -55,6 +51,7 @@
         android:layout_toEndOf="@id/imgStr"
         android:padding="6dp"
         android:text="9:30"
+        android:textColor="@color/colorMainBlack"
         android:textSize="@dimen/dp_24" />
 
     <ImageView
@@ -62,7 +59,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/imgStr"
-        android:layout_marginStart="@dimen/dp_220"
+        android:layout_marginStart="@dimen/dp_180"
         android:padding="@dimen/dp_6"
         android:contentDescription="@string/main_disability_endImg"
         app:srcCompat="@android:drawable/ic_lock_power_off" />
@@ -75,6 +72,7 @@
         android:layout_toEndOf="@id/imgEnd"
         android:padding="6dp"
         android:text="18:30"
+        android:textColor="@color/colorMainBlack"
         android:textSize="@dimen/dp_24" />
 
     <TextView
@@ -84,7 +82,9 @@
         android:layout_alignParentEnd="true"
         android:layout_alignBaseline="@id/tvDay"
         android:padding="6dp"
+        android:layout_marginRight="@dimen/dp_6"
         android:text="8:00"
+        android:textColor="@color/colorMainBlack"
         android:textSize="@dimen/dp_20" />
 
     <TextView
@@ -94,13 +94,11 @@
         android:layout_alignLeft="@id/imgStr"
         android:layout_below="@id/imgStr"
         android:padding="6dp"
-        android:layout_marginRight="@dimen/dp_80"
+        android:layout_marginRight="@dimen/dp_70"
         android:text="アンドロイド10倍CFDホーム画面ロードのバグ修正"
         android:textSize="@dimen/dp_12"
         android:singleLine="false"
         android:maxLines="10"
         android:maxEms="500"/>
-
-
 
 </RelativeLayout>
