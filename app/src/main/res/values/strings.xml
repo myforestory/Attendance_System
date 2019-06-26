@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">My Application</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -7,12 +6,19 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
-    <string name="menu_home">マルコ・ポーローズ</string>
-    <string name="menu_logout">ログアウト</string>
+
     <string name="menu_slideshow">Slideshow</string>
     <string name="menu_tools">Tools</string>
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
+
+
+    <string name="app_name">勤怠管理システム</string>
+    <string name="act_main">Main Activity</string>
+    <string name="act_update">Update Activity</string>
+
+    <string name="menu_home">マルコ・ポーローズ</string>
+    <string name="menu_logout">ログアウト</string>
 
     <string name="main_disability_StrImg">imageStr</string>
     <string name="main_disability_endImg">imageEnd</string>

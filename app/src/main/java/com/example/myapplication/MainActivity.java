@@ -1,6 +1,8 @@
 package com.example.myapplication;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
@@ -34,8 +36,6 @@ import java.util.TimeZone;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private ListView lvTeam;
-    private List<Team> teamList;
     private ListView lvMainInfo;
     private List<MainInfo> mainInfoList;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -46,13 +46,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setTitle("");
 //        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 //        getSupportActionBar().setCustomView(R.layout.your_LAYOUT);
 
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
 //        FloatingActionButton fab = findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -90,7 +89,7 @@ public class MainActivity extends AppCompatActivity
                 userEmailTextView.setText(emailString);
                 setTitle(mDrawerTitle);
                 invalidateOptionsMenu();
-                 // creates call to onPrepareOptionsMenu()
+                // creates call to onPrepareOptionsMenu()
             }
 
         };
@@ -182,14 +181,23 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void findViews() {
-        lvMainInfo = (ListView) findViewById(R.id.lvTeam);
+
+        lvMainInfo = (ListView) findViewById(R.id.lvMainInfo);
         lvMainInfo.setAdapter(new MainInfoAdapter(this, mainInfoList));
         lvMainInfo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this, UpdateActivity.class);
+                Bundle bundle = new Bundle();
+
                 MainInfo mainInfo = (MainInfo) parent.getItemAtPosition(position);
-                String info = mainInfo.getDate();
-                Toast.makeText(MainActivity.this, info, Toast.LENGTH_LONG).show();
+                String date = mainInfo.getDate();
+                bundle.putString("date", date);
+
+                intent.putExtras(bundle);
+                startActivity(intent);
+
             }
         });
     }
@@ -198,7 +206,7 @@ public class MainActivity extends AppCompatActivity
         private LayoutInflater layoutInflater;
         private List<MainInfo> mainInfoList;
 
-	    public MainInfoAdapter(Context context, List<MainInfo> mainInfoList) {
+        public MainInfoAdapter(Context context, List<MainInfo> mainInfoList) {
             this.mainInfoList = mainInfoList;
 
             layoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -223,8 +231,8 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-	        ViewHolder holder;
-            if(convertView == null) {
+            ViewHolder holder;
+            if (convertView == null) {
                 holder = new ViewHolder();
                 convertView = layoutInflater.inflate(R.layout.listview_maininfo, parent, false);
                 holder.tvDate = (TextView) convertView.findViewById(R.id.tvDate);
@@ -239,11 +247,23 @@ public class MainActivity extends AppCompatActivity
             }
             MainInfo maininfo = mainInfoList.get(position);
             holder.tvDate.setText(maininfo.getDate());
+
+            if (maininfo.getDate().length() == 2) {
+                holder.tvDate.setTextSize(getResources().getDimension(R.dimen.dp_12));
+            } else {
+                holder.tvDate.setTextSize(getResources().getDimension(R.dimen.dp_16));
+            }
             holder.tvDay.setText(maininfo.getDay());
+            if ("土".equals(maininfo.getDay()) || "日".equals(maininfo.getDay()) || "土".equals(maininfo.getDay())) {
+                convertView.setBackgroundColor(getResources().getColor(R.color.colorMainLightGrey));
+            } else {
+                convertView.setBackgroundColor(getResources().getColor(R.color.colorMainWhite));
+            }
             holder.tvStrTime.setText(maininfo.getStrTime());
             holder.tvEndTime.setText(maininfo.getEndTime());
             holder.tvTotalTime.setText(maininfo.getTotalTime());
             holder.tvDiscretion.setText(maininfo.getDiscretion());
+
 
             return convertView;
         }
@@ -253,7 +273,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public void setTitleCurrentTime(){
+    public void setTitleCurrentTime() {
         TextView titleDate = (TextView) findViewById(R.id.titleDate);
         TextView titleTime = (TextView) findViewById(R.id.titleTime);
 
@@ -268,13 +288,13 @@ public class MainActivity extends AppCompatActivity
         titleTime.setText(formattedTime);
     }
 
-    public void updateTitleTime(){
+    public void updateTitleTime() {
         Thread thread = new Thread() {
 
             @Override
             public void run() {
                 try {
-                    while(!isInterrupted()){
+                    while (!isInterrupted()) {
                         Thread.sleep(1000);
                         runOnUiThread(new Runnable() {
                             @Override
@@ -283,7 +303,7 @@ public class MainActivity extends AppCompatActivity
                             }
                         });
                     }
-                } catch(InterruptedException e) {
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
