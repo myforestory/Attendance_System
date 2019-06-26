@@ -4,35 +4,49 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".MainActivity"
-    tools:showIn="@layout/app_bar_main">
+    tools:context=".UpdateActivity"
+    tools:showIn="@layout/app_bar_update">
 
+    <EditText
+        android:id="@+id/etStrTime_update"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="@dimen/dp_80"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:hint="@string/update_hint_etStrTime"
+        android:focusable="false"
+        android:text="" />
 
-    <TextView
-        android:id="@+id/tvStrTime_update"
+    <EditText
+        android:id="@+id/etEndTime_update"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etStrTime_update"
+        android:layout_marginTop="@dimen/dp_24"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:hint="@string/update_hint_etStrTime"
+        android:text="" />
+
+    <EditText
+        android:id="@+id/etDescription_update"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etEndTime_update"
+        android:layout_marginTop="100dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:hint="@string/update_hint_etDescription_update"
+        android:text="" />
+
+    <Button
+        android:id="@+id/ggg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_12"
-        android:text="TextView"
-        tools:layout_editor_absoluteX="165dp"
-        tools:layout_editor_absoluteY="239dp" />
-
-    <TextView
-        android:id="@+id/tvEndTime_update"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        tools:layout_editor_absoluteX="165dp"
-        tools:layout_editor_absoluteY="239dp" />
-
-    <TextView
-        android:id="@+id/description_update"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        tools:layout_editor_absoluteX="165dp"
-        tools:layout_editor_absoluteY="239dp" />
-
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="422dp"
+        android:text="Button" />
 
 </RelativeLayout>

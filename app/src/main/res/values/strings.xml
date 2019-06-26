@@ -23,4 +23,8 @@
     <string name="main_disability_StrImg">imageStr</string>
     <string name="main_disability_endImg">imageEnd</string>
 
+    <string name="update_hint_etStrTime">出勤時間を入力</string>
+    <string name="update_hint_etEndTime">退勤時間を入力</string>
+    <string name="update_hint_etDescription_update">作業内容を入力</string>
+
 </resources>
