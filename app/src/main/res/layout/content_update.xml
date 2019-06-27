@@ -17,6 +17,7 @@
         android:inputType="textPersonName"
         android:hint="@string/update_hint_etStrTime"
         android:focusable="false"
+        android:drawableStart="@drawable/ic_play"
         android:text="" />
 
     <EditText
@@ -29,6 +30,7 @@
         android:inputType="textPersonName"
         android:hint="@string/update_hint_etStrTime"
         android:focusable="false"
+        android:drawableStart="@drawable/ic_power_setting"
         android:text="" />
 
     <EditText
