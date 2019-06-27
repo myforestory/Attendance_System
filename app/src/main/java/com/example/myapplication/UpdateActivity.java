@@ -292,9 +292,10 @@ public class UpdateActivity extends AppCompatActivity {
                                     format = new SimpleDateFormat("HH:mm");
 
                                     timeValue = new java.sql.Time(format.parse(dtStart).getTime());
-                                    txttime.setText(String.valueOf(timeValue));
-                                    String amPm = hourOfDay % 12 + ":" + minute + " " + ((hourOfDay >= 12) ? "PM" : "AM");
-                                    txttime.setText(amPm + "\n" + String.valueOf(timeValue));
+                                    txttime.setText(timeFormattedRoundDown(String.valueOf(timeValue)));
+//                                    String amPm = hourOfDay % 12 + ":" + minute + " " + ((hourOfDay >= 12) ? "PM" : "AM");
+//                                    txttime.setText(amPm + "\n" + String.valueOf(timeValue));
+
                                 } catch (Exception ex) {
                                     txttime.setText(ex.getMessage().toString());
                                 }
@@ -320,9 +321,9 @@ public class UpdateActivity extends AppCompatActivity {
                                     format = new SimpleDateFormat("HH:mm");
 
                                     timeValue = new java.sql.Time(format.parse(dtStart).getTime());
-                                    txttime2.setText(String.valueOf(timeValue));
-                                    String amPm = hourOfDay % 12 + ":" + minute + " " + ((hourOfDay >= 12) ? "PM" : "AM");
-                                    txttime2.setText(amPm + "\n" + String.valueOf(timeValue));
+                                    txttime2.setText(timeFormattedRoundDown(String.valueOf(timeValue)));
+//                                    String amPm = hourOfDay % 12 + ":" + minute + " " + ((hourOfDay >= 12) ? "PM" : "AM");
+//                                    txttime2.setText(amPm + "\n" + String.valueOf(timeValue));
                                 } catch (Exception ex) {
                                     txttime2.setText(ex.getMessage().toString());
                                 }
@@ -334,6 +335,25 @@ public class UpdateActivity extends AppCompatActivity {
                 td.show();
             }
         });
+    }
+
+    private String timeFormattedRoundDown(String originalTime) {
+        String formattedTime = "";
+        String formattedMin = "";
+        String hour = originalTime.split(":")[0];
+        int originalMin = Integer.valueOf(originalTime.split(":")[1]);
+
+        if (originalMin>=0 && originalMin<15) {
+            formattedMin = "00";
+        } else if (originalMin>=15 && originalMin<30) {
+            formattedMin = "15";
+        } else if (originalMin>=30 && originalMin<45) {
+            formattedMin = "30";
+        } else {
+            formattedMin = "45";
+        }
+        formattedTime = hour + ":" + formattedMin;
+        return formattedTime;
     }
 
 
