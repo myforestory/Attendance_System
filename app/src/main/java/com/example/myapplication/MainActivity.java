@@ -20,6 +20,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -32,6 +33,8 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+
+import de.halfbit.pinnedsection.PinnedSectionListView;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -47,55 +50,10 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle("");
-//        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-//        getSupportActionBar().setCustomView(R.layout.your_LAYOUT);
 
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar_main);
-        setSupportActionBar(toolbar);
-//        FloatingActionButton fab = findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
 
-        mTitle = mDrawerTitle = getTitle();
-
-        mDrawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar
-                , R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
-
-            public void onDrawerClosed(View view) {
-                setTitle(mTitle);
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-
-            public void onDrawerOpened(View drawerView) {
-                TextView userNameTextView = (TextView) findViewById(R.id.user_name);
-                TextView userEmailTextView = (TextView) findViewById(R.id.user_email);
-                SpannableString nameString = new SpannableString("曾鄢畇");
-                nameString.setSpan(new UnderlineSpan(), 0, nameString.length(), 0);
-                userNameTextView.setText(nameString);
-                SpannableString emailString = new SpannableString("sou@marcopolos.co.jp");
-                userEmailTextView.setText(emailString);
-                setTitle(mDrawerTitle);
-                invalidateOptionsMenu();
-                // creates call to onPrepareOptionsMenu()
-            }
-
-        };
-        drawer.addDrawerListener(mDrawerToggle);
-
-        //initTeams();
+        drawerAction();
         initMainInfo();
         findViews();
         updateTitleTime();
@@ -160,6 +118,57 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    private void drawerAction() {
+        Toolbar toolbar = findViewById(R.id.toolbar_main);
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+        navigationView.setNavigationItemSelectedListener(this);
+
+        mTitle = mDrawerTitle = getTitle();
+
+        mDrawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar
+                , R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+
+            public void onDrawerClosed(View view) {
+                setTitle(mTitle);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+
+            public void onDrawerOpened(View drawerView) {
+                TextView userNameTextView = (TextView) findViewById(R.id.user_name);
+                TextView userEmailTextView = (TextView) findViewById(R.id.user_email);
+                SpannableString nameString = new SpannableString("曾鄢畇");
+                nameString.setSpan(new UnderlineSpan(), 0, nameString.length(), 0);
+                userNameTextView.setText(nameString);
+                SpannableString emailString = new SpannableString("sou@marcopolos.co.jp");
+                userEmailTextView.setText(emailString);
+                setTitle(mDrawerTitle);
+                invalidateOptionsMenu();
+                // creates call to onPrepareOptionsMenu()
+            }
+
+        };
+        drawer.addDrawerListener(mDrawerToggle);
+
+//        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+//        getSupportActionBar().setCustomView(R.layout.your_LAYOUT);
+
+//        FloatingActionButton fab = findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
+    }
+
     private void initMainInfo() {
         // MainInfo儲存ListView各列對應的資料
         mainInfoList = new ArrayList<>();
@@ -210,8 +219,6 @@ public class MainActivity extends AppCompatActivity
             this.mainInfoList = mainInfoList;
 
             layoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-            //same way
-            //layoutInflater = LayoutInflater.from(context);
         }
 
         @Override
