@@ -1,6 +1,9 @@
 package com.example.myapplication;
 
 public class MainInfo {
+
+    private int type;
+    private String id;
     private String date;
     private String day;
     private String strTime;
@@ -8,11 +11,13 @@ public class MainInfo {
     private String totalTime;
     private String discretion;
 
-    public MainInfo () {
+    public MainInfo() {
 
     }
 
-    public MainInfo(String date, String day, String strTime, String endTime, String totalTime, String discretion) {
+    public MainInfo(int type, String id, String date, String day, String strTime, String endTime, String totalTime, String discretion) {
+        this.type = type;
+        this.id = id;
         this.date = date;
         this.day = day;
         this.strTime = strTime;
@@ -23,6 +28,22 @@ public class MainInfo {
 
     public String getDate() {
         return date;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public void setDate(String date) {
