@@ -15,6 +15,7 @@
 
     <string name="app_name">勤怠管理システム</string>
     <string name="act_main">Main Activity</string>
+    <string name="act_login">Login Activity</string>
     <string name="act_update">Update Activity</string>
 
     <string name="menu_home">マルコ・ポーローズ</string>

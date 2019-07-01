@@ -102,6 +102,13 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.back_home) {
             // Handle the camera action
+        } else if (id == R.id.log_out) {
+            Intent intent = new Intent();
+            intent.setClass(MainActivity.this, LoginActivity.class);
+            Bundle bundle = new Bundle();
+
+            intent.putExtras(bundle);
+            startActivity(intent);
         }
 //        } else if (id == R.id.nav_gallery) {
 //
@@ -139,7 +146,7 @@ public class MainActivity extends AppCompatActivity
 
             public void onDrawerClosed(View view) {
                 setTitle(mTitle);
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                invalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
@@ -152,23 +159,11 @@ public class MainActivity extends AppCompatActivity
                 userEmailTextView.setText(emailString);
                 setTitle(mDrawerTitle);
                 invalidateOptionsMenu();
-                // creates call to onPrepareOptionsMenu()
             }
 
         };
         drawer.addDrawerListener(mDrawerToggle);
 
-//        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-//        getSupportActionBar().setCustomView(R.layout.your_LAYOUT);
-
-//        FloatingActionButton fab = findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
     }
 
     private void initMainInfo() {
@@ -381,17 +376,6 @@ public class MainActivity extends AppCompatActivity
                 } else {
                     convertView.setBackgroundColor(getResources().getColor(R.color.colorMainWhite));
                 }
-
-//            if (maininfo.getType() == MainInfo.SECTION) {
-//                holder.tvDate.setBackgroundResource(R.color.colorMainRed);
-//                //隐藏置顶栏图片
-//                holder.tvDate.setTextSize(14);
-//                //隐藏置顶栏的内容
-//                holder.tvDate.setVisibility(View.GONE);
-//            }else{
-//                holder.tvDate.setBackgroundResource(R.color.colorMainWhite);
-//                holder.tvDate.setVisibility(View.VISIBLE);
-//            }
 
                 holder.tvStrTime.setText(maininfo.getStrTime());
                 holder.tvEndTime.setText(maininfo.getEndTime());
