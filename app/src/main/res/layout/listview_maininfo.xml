@@ -38,13 +38,13 @@
         android:id="@+id/imgStr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_90"
+        android:layout_marginStart="@dimen/dp_70"
         android:layout_marginTop="@dimen/dp_8"
         android:contentDescription="@string/main_disability_StrImg"
         app:srcCompat="@drawable/ic_play" />
 
     <TextView
-        android:id="@+id/tvStrTime"
+        android:id="@+id/tvStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@id/imgStr"
@@ -59,15 +59,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/imgStr"
-        android:layout_marginStart="@dimen/dp_180"
+        android:layout_marginStart="@dimen/dp_190"
         android:contentDescription="@string/main_disability_endImg"
         app:srcCompat="@drawable/ic_power_setting" />
 
     <TextView
-        android:id="@+id/tvEndTime"
+        android:id="@+id/tvEnd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@id/tvStrTime"
+        android:layout_alignBaseline="@id/tvStart"
         android:layout_toEndOf="@id/imgEnd"
         android:padding="6dp"
         android:text="18:30"
@@ -75,7 +75,7 @@
         android:textSize="@dimen/dp_24" />
 
     <TextView
-        android:id="@+id/tvTotalTime"
+        android:id="@+id/tvWorked_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
@@ -87,13 +87,13 @@
         android:textSize="@dimen/dp_20" />
 
     <TextView
-        android:id="@+id/tvDiscretion"
+        android:id="@+id/tvRemarks"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/imgStr"
         android:layout_below="@id/imgStr"
         android:padding="6dp"
-        android:layout_marginRight="@dimen/dp_70"
+        android:layout_marginRight="@dimen/dp_42"
         android:text="アンドロイド10倍CFDホーム画面ロードのバグ修正"
         android:textSize="@dimen/dp_12"
         android:singleLine="false"

@@ -19,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
@@ -26,21 +27,29 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
 import de.halfbit.pinnedsection.PinnedSectionListView;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private ListView lvMainInfo;
-    private ArrayList <MainInfo>mainInfoList;
     private ActionBarDrawerToggle mDrawerToggle;
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
@@ -52,12 +61,11 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle("");
-
         setContentView(R.layout.activity_main);
 
         drawerAction();
-        initMainInfo();
-        findViews();
+
+        setMainInfo();
         updateTitleTime();
     }
 
@@ -166,108 +174,106 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    private void initMainInfo() {
+    private void setMainInfo() {
+        String dataTime;
+        int year, month;
+
+        Calendar c = Calendar.getInstance();
+        year = c.get(Calendar.YEAR);
+        month = c.get(Calendar.MONTH)+1;
+
+
+        getMainInfoData("2019", "06");
+    }
+
+    public void getMainInfoData(final String year,final String month) {
+        String loginToken, userId, getDataUrl;
+        Bundle bundle = this.getIntent().getExtras();
+        String dataTime = year + "-" + month;
+
+        loginToken = bundle.getString("loginToken");
+        userId = bundle.getString("userId");
+        getDataUrl = "http://kintai-api.ios.tokyo/user/" + userId + "/attendance/" + dataTime;
+
+        Log.d("loginToken", loginToken);
+
+        if(!loginToken.isEmpty() && !userId.isEmpty()) {
+            OkHttpGetPost.getAsycHttp(getDataUrl, new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                    Log.d("onFailure",  e.toString());
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    ArrayList <MainInfo>mainInfoList;
+                    String responseBody, todayDate;
+
+                    responseBody = response.body().string();
+                    try {
+                        mainInfoList = new ArrayList<>();
+
+                        Log.d("ggggggggggg", responseBody);
+                        JSONObject jsonObject = new JSONObject(responseBody);
+                        JSONArray monthJsonArray = jsonObject.getJSONObject("data").getJSONArray("days");
+                        todayDate = jsonObject.getJSONObject("data").getJSONObject("today").getString("date");
+                        Log.d("todayDate", todayDate);
+                        String date, day, start, end, worked_time, remarks;
+
+                        mainInfoList.add(new MainInfo(SECTION,
+                                "",
+                                "1",
+                                year + "年" + 6 + "月",
+                                "",
+                                "",
+                                "",
+                                ""));
+
+                        for (int i = 0; i < monthJsonArray.length(); i++) {
+                            JSONObject row = monthJsonArray.getJSONObject(i);
+                            HashMap<String, String> mainInfoMap = mainInfoDataFormat(row);
+                            date = mainInfoMap.get("date");
+                            day = mainInfoMap.get("day");
+                            start = mainInfoMap.get("start");
+                            end = mainInfoMap.get("end");
+                            worked_time = mainInfoMap.get("worked_time");
+                            remarks = mainInfoMap.get("remarks");
+
+                            mainInfoList.add(new MainInfo(ITEM,
+                                    "",
+                                    date,
+                                    day,
+                                    start,
+                                    end,
+                                    worked_time,
+                                    remarks));
+                        }
+
+                        findViews(mainInfoList);
+                    } catch (JSONException e) {
+
+                    }
+                }
+            }, null, "Authorization", loginToken);
+        }
+
         // MainInfo儲存ListView各列對應的資料
-        mainInfoList = new ArrayList<>();
-        mainInfoList.add(new MainInfo(SECTION,"", "1", "2019年6月", "", "", "", ""));
+//        mainInfoList = new ArrayList<>();
+//        mainInfoList.add(new MainInfo(SECTION,"", "1", "2019年6月", "", "", "", ""));
+//
+//        mainInfoList.add(new MainInfo(ITEM,"", "1", "土", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
+    }
 
-        mainInfoList.add(new MainInfo(ITEM,"", "1", "土", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "2", "日", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "3", "月", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "4", "火", "9:30", "20:30", "10:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "5", "水", "9:30", "19:30", "9:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "6", "木", "9:30", "18:30", "8:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "7", "金", "9:30", "18:30", "8:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "8", "土", "9:30", "18:30", "8:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "9", "日", "9:30", "20:30", "10:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "10", "月", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "11", "火", "9:30", "19:00", "8:30", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "12", "水", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "13", "木", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "14", "金", "9:30", "20:30", "10:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "15", "土", "9:30", "18:30", "8:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "16", "木", "9:30", "18:30", "8:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "17", "金", "9:30", "18:30", "8:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "18", "土", "9:30", "18:30", "8:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "19", "日", "9:30", "20:30", "10:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "20", "月", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "21", "火", "9:30", "19:00", "8:30", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "22", "水", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "23", "木", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "24", "金", "9:30", "20:30", "10:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "25", "土", "9:30", "18:30", "8:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "26", "木", "9:30", "18:30", "8:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "27", "金", "9:30", "18:30", "8:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "28", "土", "9:30", "18:30", "8:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "29", "日", "9:30", "20:30", "10:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "30", "月", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(SECTION,"", "1", "2019年7月", "", "", "", ""));
-        mainInfoList.add(new MainInfo(ITEM,"", "1", "土", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "2", "日", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "3", "月", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "4", "火", "9:30", "20:30", "10:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "5", "水", "9:30", "19:30", "9:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "6", "木", "9:30", "18:30", "8:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "7", "金", "9:30", "18:30", "8:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "8", "土", "9:30", "18:30", "8:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "9", "日", "9:30", "20:30", "10:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "10", "月", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "11", "火", "9:30", "19:00", "8:30", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "12", "水", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "13", "木", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "14", "金", "9:30", "20:30", "10:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "15", "土", "9:30", "18:30", "8:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "16", "木", "9:30", "18:30", "8:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "17", "金", "9:30", "18:30", "8:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "18", "土", "9:30", "18:30", "8:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "19", "日", "9:30", "20:30", "10:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "20", "月", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "21", "火", "9:30", "19:00", "8:30", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "22", "水", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "23", "木", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "24", "金", "9:30", "20:30", "10:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "25", "土", "9:30", "18:30", "8:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "26", "木", "9:30", "18:30", "8:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "27", "金", "9:30", "18:30", "8:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "28", "土", "9:30", "18:30", "8:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "29", "日", "9:30", "20:30", "10:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "30", "月", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(SECTION,"", "1", "2019年8月", "", "", "", ""));
-        mainInfoList.add(new MainInfo(ITEM,"", "1", "土", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "2", "日", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "3", "月", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "4", "火", "9:30", "20:30", "10:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "5", "水", "9:30", "19:30", "9:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "6", "木", "9:30", "18:30", "8:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "7", "金", "9:30", "18:30", "8:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "8", "土", "9:30", "18:30", "8:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "9", "日", "9:30", "20:30", "10:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "10", "月", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "11", "火", "9:30", "19:00", "8:30", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "12", "水", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "13", "木", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "14", "金", "9:30", "20:30", "10:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "15", "土", "9:30", "18:30", "8:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "16", "木", "9:30", "18:30", "8:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "17", "金", "9:30", "18:30", "8:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "18", "土", "9:30", "18:30", "8:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "19", "日", "9:30", "20:30", "10:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "20", "月", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "21", "火", "9:30", "19:00", "8:30", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "22", "水", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "23", "木", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "24", "金", "9:30", "20:30", "10:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "25", "土", "9:30", "18:30", "8:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "26", "木", "9:30", "18:30", "8:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "27", "金", "9:30", "18:30", "8:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "28", "土", "9:30", "18:30", "8:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "29", "日", "9:30", "20:30", "10:00", "アンドロイド基本知識学習 / アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-        mainInfoList.add(new MainInfo(ITEM,"", "30", "月", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
-     }
-
-    public void findViews() {
+    public void findViews(final ArrayList <MainInfo>mainInfoList) {
         lvMainInfo = (ListView) findViewById(R.id.lvMainInfo);
-        lvMainInfo.setAdapter(new MainInfoAdapter(this, mainInfoList));
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                lvMainInfo.setAdapter(new MainInfoAdapter(MainActivity.this, mainInfoList));
+            }
+        });
+
 
         lvMainInfo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -355,10 +361,10 @@ public class MainActivity extends AppCompatActivity
                     convertView = layoutInflater.inflate(R.layout.listview_maininfo, parent, false);
                     holder.tvDate = (TextView) convertView.findViewById(R.id.tvDate);
                     holder.tvDay = (TextView) convertView.findViewById(R.id.tvDay);
-                    holder.tvStrTime = (TextView) convertView.findViewById(R.id.tvStrTime);
-                    holder.tvEndTime = (TextView) convertView.findViewById(R.id.tvEndTime);
-                    holder.tvTotalTime = (TextView) convertView.findViewById(R.id.tvTotalTime);
-                    holder.tvDiscretion = (TextView) convertView.findViewById(R.id.tvDiscretion);
+                    holder.tvStart = (TextView) convertView.findViewById(R.id.tvStart);
+                    holder.tvEnd = (TextView) convertView.findViewById(R.id.tvEnd);
+                    holder.tvWorked_time = (TextView) convertView.findViewById(R.id.tvWorked_time);
+                    holder.tvRemarks = (TextView) convertView.findViewById(R.id.tvRemarks);
                     convertView.setTag(holder);
                 } else {
                     holder = (ViewHolder) convertView.getTag();
@@ -377,10 +383,10 @@ public class MainActivity extends AppCompatActivity
                     convertView.setBackgroundColor(getResources().getColor(R.color.colorMainWhite));
                 }
 
-                holder.tvStrTime.setText(maininfo.getStrTime());
-                holder.tvEndTime.setText(maininfo.getEndTime());
-                holder.tvTotalTime.setText(maininfo.getTotalTime());
-                holder.tvDiscretion.setText(maininfo.getDiscretion());
+                holder.tvStart.setText(maininfo.getStart());
+                holder.tvEnd.setText(maininfo.getEnd());
+                holder.tvWorked_time.setText(maininfo.getWorked_time());
+                holder.tvRemarks.setText(maininfo.getRemarks());
             } else {
                 if (convertView == null) {
                     holder = new ViewHolder();
@@ -397,22 +403,8 @@ public class MainActivity extends AppCompatActivity
         }
 
         private class ViewHolder {
-            TextView tvDate, tvDay, tvStrTime, tvEndTime, tvTotalTime, tvDiscretion, ggg;
+            TextView tvDate, tvDay, tvStart, tvEnd, tvWorked_time, tvRemarks;
         }
-    }
-    public void setTitleCurrentTime() {
-        TextView titleDate = (TextView) findViewById(R.id.titleDate);
-        TextView titleTime = (TextView) findViewById(R.id.titleTime);
-
-        Calendar c = new GregorianCalendar(TimeZone.getTimeZone("GMT-11:00"), Locale.US);
-
-        SimpleDateFormat df = new SimpleDateFormat("yyyy年MM月dd日");
-        SimpleDateFormat tf = new SimpleDateFormat("HH:mm:ss");
-        String formattedDate = df.format(c.getTime());
-        String formattedTime = tf.format(c.getTime());
-
-        titleDate.setText(formattedDate);
-        titleTime.setText(formattedTime);
     }
 
     public void updateTitleTime() {
@@ -438,4 +430,94 @@ public class MainActivity extends AppCompatActivity
         thread.start();
     }
 
+    public void setTitleCurrentTime() {
+        TextView titleDate = (TextView) findViewById(R.id.titleDate);
+        TextView titleTime = (TextView) findViewById(R.id.titleTime);
+
+        Calendar c = new GregorianCalendar(TimeZone.getTimeZone("GMT-11:00"), Locale.US);
+
+        SimpleDateFormat df = new SimpleDateFormat("yyyy年MM月dd日");
+        SimpleDateFormat tf = new SimpleDateFormat("HH:mm:ss");
+        String formattedDate = df.format(c.getTime());
+        String formattedTime = tf.format(c.getTime());
+
+        titleDate.setText(formattedDate);
+        titleTime.setText(formattedTime);
+    }
+
+    public HashMap<String, String> mainInfoDataFormat(JSONObject row) {
+        HashMap<String, String> mainInfoMap = new HashMap<String, String>();
+        String date="", day="", start="", end="", worked_time="", remarks="";
+        String[] startArr, endArr;
+        try {
+            date = row.getString("date");
+            day = "";
+            if (!date.isEmpty()) {
+                day = getJpWeekday (date);
+                int len = date.length();
+                date = (date.charAt(len - 2) == '0') ? date.substring(len - 1, len) : date.substring(len - 2, len);
+            }
+            startArr = row.getString("start").split("\\s+");
+            if (startArr.length > 1) {
+                start = startArr[1].substring(0, 5);
+            }
+            endArr = row.getString("end").split("\\s+");
+            if (endArr.length > 1) {
+                end = endArr[1].substring(0, 5);
+            }
+            worked_time = row.getString("worked_time");
+            if (worked_time.isEmpty() || "null".equals(worked_time)){
+                worked_time = "0";
+            }
+            remarks = row.getString("remarks");
+            if (remarks.isEmpty() || "null".equals(remarks)) {
+                remarks = "";
+            }
+            mainInfoMap.put("date", date);
+            mainInfoMap.put("day", day);
+            mainInfoMap.put("start", start);
+            mainInfoMap.put("end", end);
+            mainInfoMap.put("worked_time", worked_time);
+            mainInfoMap.put("remarks", remarks);
+        } catch (JSONException e) {
+
+        }
+        return mainInfoMap;
+    }
+
+    public String getJpWeekday (String infoDate) {
+        String weekday = "";
+        int year, month, date;
+        year = Integer.valueOf(infoDate.split("-")[0]);
+        month = Integer.valueOf(infoDate.split("-")[1]) - 1;
+        date = Integer.valueOf(infoDate.split("-")[2]);
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(year, month, date);
+
+        switch (cal.get(Calendar.DAY_OF_WEEK)) {
+            case Calendar.SUNDAY:
+                weekday = "日";
+                break;
+            case Calendar.MONDAY:
+                weekday = "月";
+                break;
+            case Calendar.TUESDAY:
+                weekday = "火";
+                break;
+            case Calendar.WEDNESDAY:
+                weekday = "水";
+                break;
+            case Calendar.THURSDAY:
+                weekday = "木";
+                break;
+            case Calendar.FRIDAY:
+                weekday = "金";
+                break;
+            case Calendar.SATURDAY:
+                weekday = "土";
+                break;
+        }
+        return weekday;
+    }
 }

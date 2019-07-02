@@ -49,16 +49,17 @@ public class LoginActivity extends AppCompatActivity {
         etUserName = (EditText) findViewById(R.id.etUserName);
         etPassword = (EditText) findViewById(R.id.etPassword);
 
+        etUserName.setText("sou@marcopolos.co.jp");
+        etPassword.setText("Aloha1qaz");
+
         String userName = etUserName.getText().toString();
         String password = etPassword.getText().toString();
-
-
 
         if (isLegal(userName, password)) {
             accountMap.put("email", userName);
             accountMap.put("password", password);
 
-            OkHttpGetPost.post(loginURL, new Callback() {
+            OkHttpGetPost.postAsycHttp(loginURL, new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
                     Toast.makeText(LoginActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
@@ -67,22 +68,24 @@ public class LoginActivity extends AppCompatActivity {
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
-                    String responseBody = response.body().string();
+                    String responseBody, loginToken, userId;
+                    responseBody = response.body().string();
                     try {
 
                         JSONObject jsonObject = new JSONObject(responseBody);
 
                         if (isLegal(jsonObject)){
+                            loginToken = jsonObject.getJSONObject("data").getString("access_token");
+                            userId = jsonObject.getJSONObject("data").getJSONObject("logging_in_user").getString("id");
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("loginToken", loginToken);
+                            bundle.putString("userId", userId);
+                            intent.putExtras(bundle);
                             startActivity(intent);
                             finish();
                         }
 
- //                       Log.d("login", returnMsg);
-//                    bundle.putString("userName", userName);
-//                    bundle.putString("password", password);
-//                    intent.putExtras(bundle);
-//                    startActivity(intent);
 
                     } catch (JSONException e) {
                         Log.d("JSONException", e.toString());

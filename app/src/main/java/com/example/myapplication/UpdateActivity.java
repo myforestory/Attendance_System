@@ -169,10 +169,10 @@ public class UpdateActivity extends AppCompatActivity {
                 convertView = layoutInflater.inflate(R.layout.listview_maininfo, parent, false);
                 holder.tvDate = (TextView) convertView.findViewById(R.id.tvDate);
                 holder.tvDay = (TextView) convertView.findViewById(R.id.tvDay);
-                holder.tvStrTime = (TextView) convertView.findViewById(R.id.tvStrTime);
-                holder.tvEndTime = (TextView) convertView.findViewById(R.id.tvEndTime);
-                holder.tvTotalTime = (TextView) convertView.findViewById(R.id.tvTotalTime);
-                holder.tvDiscretion = (TextView) convertView.findViewById(R.id.tvDiscretion);
+//                holder.tvStrTime = (TextView) convertView.findViewById(R.id.tvStrTime);
+//                holder.tvEndTime = (TextView) convertView.findViewById(R.id.tvEndTime);
+//                holder.tvTotalTime = (TextView) convertView.findViewById(R.id.tvTotalTime);
+//                holder.tvDiscretion = (TextView) convertView.findViewById(R.id.tvDiscretion);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
@@ -191,10 +191,10 @@ public class UpdateActivity extends AppCompatActivity {
             } else {
                 convertView.setBackgroundColor(getResources().getColor(R.color.colorMainWhite));
             }
-            holder.tvStrTime.setText(maininfo.getStrTime());
-            holder.tvEndTime.setText(maininfo.getEndTime());
-            holder.tvTotalTime.setText(maininfo.getTotalTime());
-            holder.tvDiscretion.setText(maininfo.getDiscretion());
+//            holder.tvStrTime.setText(maininfo.getStrTime());
+//            holder.tvEndTime.setText(maininfo.getEndTime());
+//            holder.tvTotalTime.setText(maininfo.getTotalTime());
+//            holder.tvDiscretion.setText(maininfo.getDiscretion());
 
 
             return convertView;

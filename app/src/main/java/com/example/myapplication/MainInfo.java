@@ -6,28 +6,25 @@ public class MainInfo {
     private String id;
     private String date;
     private String day;
-    private String strTime;
-    private String endTime;
-    private String totalTime;
-    private String discretion;
+    private String start;
+    private String end;
+    private String worked_time;
+    private String remarks;
+
 
     public MainInfo() {
 
     }
 
-    public MainInfo(int type, String id, String date, String day, String strTime, String endTime, String totalTime, String discretion) {
+    public MainInfo(int type, String id, String date, String day, String start, String end, String worked_time, String remarks) {
         this.type = type;
         this.id = id;
         this.date = date;
         this.day = day;
-        this.strTime = strTime;
-        this.endTime = endTime;
-        this.totalTime = totalTime;
-        this.discretion = discretion;
-    }
-
-    public String getDate() {
-        return date;
+        this.start = start;
+        this.end = end;
+        this.worked_time = worked_time;
+        this.remarks = remarks;
     }
 
     public int getType() {
@@ -46,6 +43,10 @@ public class MainInfo {
         this.id = id;
     }
 
+    public String getDate() {
+        return date;
+    }
+
     public void setDate(String date) {
         this.date = date;
     }
@@ -58,35 +59,35 @@ public class MainInfo {
         this.day = day;
     }
 
-    public String getStrTime() {
-        return strTime;
+    public String getStart() {
+        return start;
     }
 
-    public void setStrTime(String strTime) {
-        this.strTime = strTime;
+    public void setStart(String start) {
+        this.start = start;
     }
 
-    public String getEndTime() {
-        return endTime;
+    public String getEnd() {
+        return end;
     }
 
-    public void setEndTime(String endTime) {
-        this.endTime = endTime;
+    public void setEnd(String end) {
+        this.end = end;
     }
 
-    public String getTotalTime() {
-        return totalTime;
+    public String getWorked_time() {
+        return worked_time;
     }
 
-    public void setTotalTime(String totalTime) {
-        this.totalTime = totalTime;
+    public void setWorked_time(String worked_time) {
+        this.worked_time = worked_time;
     }
 
-    public String getDiscretion() {
-        return discretion;
+    public String getRemarks() {
+        return remarks;
     }
 
-    public void setDiscretion(String discretion) {
-        this.discretion = discretion;
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
     }
 }
