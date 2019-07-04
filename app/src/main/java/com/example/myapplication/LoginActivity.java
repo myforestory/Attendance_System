@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -23,6 +24,8 @@ public class LoginActivity extends AppCompatActivity {
     private EditText etUserName, etPassword;
     private Button btnLogin;
     private final static String loginURL = "http://kintai-api.ios.tokyo/user/login";
+    SharedPreferences loginKey;
+    SharedPreferences logoutKey;
 
     protected void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
@@ -52,8 +55,8 @@ public class LoginActivity extends AppCompatActivity {
         etUserName.setText("sou@marcopolos.co.jp");
         etPassword.setText("Aloha1qaz");
 
-        String userName = etUserName.getText().toString();
-        String password = etPassword.getText().toString();
+        final String userName = etUserName.getText().toString();
+        final String password = etPassword.getText().toString();
 
         if (isLegal(userName, password)) {
             accountMap.put("email", userName);
@@ -68,7 +71,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
-                    String responseBody, loginToken, userId;
+                    String responseBody, loginToken, userId, name, email;
                     responseBody = response.body().string();
                     try {
 
@@ -77,11 +80,27 @@ public class LoginActivity extends AppCompatActivity {
                         if (isLegal(jsonObject)){
                             loginToken = jsonObject.getJSONObject("data").getString("access_token");
                             userId = jsonObject.getJSONObject("data").getJSONObject("logging_in_user").getString("id");
+                            name = jsonObject.getJSONObject("data").getJSONObject("logging_in_user").getString("name");
+                            email = jsonObject.getJSONObject("data").getJSONObject("logging_in_user").getString("email");
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             Bundle bundle = new Bundle();
                             bundle.putString("loginToken", loginToken);
                             bundle.putString("userId", userId);
+                            bundle.putString("name",name);
+                            bundle.putString("email", email);
                             intent.putExtras(bundle);
+
+                            loginKey = getSharedPreferences("loginKey", MODE_PRIVATE);
+                            loginKey.edit()
+                                    .putString("userName", userName)
+                                    .putString("password", password)
+                                    .putString("loginToken", loginToken).commit();
+                            logoutKey = getSharedPreferences("logoutKey", MODE_PRIVATE);
+                            logoutKey.edit()
+                                    .putString("userName", userName)
+                                    .putString("password", password)
+                                    .putString("loginToken", loginToken).commit();
+
                             startActivity(intent);
                             finish();
                         }
@@ -107,7 +126,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private Boolean isLegal (JSONObject jsonObject) {
-        Boolean isLegal = true;
+        Boolean isLegal = false;
         String returnCode = "";
         try {
             returnCode = jsonObject.getString("code");

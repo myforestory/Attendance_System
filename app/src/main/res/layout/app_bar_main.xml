@@ -42,7 +42,7 @@
                     android:textSize="@dimen/dp_20" />
 
                 <Button
-                    android:id="@+id/button"
+                    android:id="@+id/btUpdate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignRight="@+id/titleDate"

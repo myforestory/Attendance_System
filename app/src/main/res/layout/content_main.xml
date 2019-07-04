@@ -8,6 +8,8 @@
     tools:context=".MainActivity"
     tools:showIn="@layout/app_bar_main">
 
+
+    <!--<com.example.myapplication.ListViewScroll-->
     <de.halfbit.pinnedsection.PinnedSectionListView
         android:id="@+id/lvMainInfo"
         android:layout_width="wrap_content"

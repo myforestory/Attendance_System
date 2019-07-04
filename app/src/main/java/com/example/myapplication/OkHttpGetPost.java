@@ -21,6 +21,23 @@ public class OkHttpGetPost {
 
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
+    public static void postAsycHttp(String url, Callback callback, HashMap<String, String> map, String headerName, String headerValue) {
+        OkHttpClient client = new OkHttpClient();
+        FormBody.Builder builder = new FormBody.Builder();
+        if(map != null) {
+            for (HashMap.Entry<String ,String> entry : map.entrySet()) {
+                builder.add(entry.getKey(), entry.getValue());
+            }
+        }
+        FormBody body = builder.build();
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .addHeader(headerName, headerValue)
+                .build();
+        client.newCall(request).enqueue(callback);
+    }
+
     public static void postAsycHttp(String url, Callback callback, HashMap<String, String> map) {
         OkHttpClient client = new OkHttpClient();
         FormBody.Builder builder = new FormBody.Builder();

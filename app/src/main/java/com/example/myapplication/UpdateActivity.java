@@ -22,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -115,9 +116,33 @@ public class UpdateActivity extends AppCompatActivity {
         tvUpdateTitle = (TextView) findViewById(R.id.tvUpdateTitle);
         ivBackToMain = (ImageView) findViewById(R.id.ivSave);
         ivSave = (ImageView) findViewById(R.id.ivBackToMain);
-        etStrTime_update = (TextView) findViewById(R.id.etStrTime_update);
-        etEndTime_update = (TextView) findViewById(R.id.etEndTime_update);
-        etDescription_update = (TextView) findViewById(R.id.etDescription_update);
+        etStrTime_update = (EditText) findViewById(R.id.etStrTime_update);
+        etEndTime_update = (EditText) findViewById(R.id.etEndTime_update);
+        etDescription_update = (EditText)findViewById(R.id.etDescription_update);
+        String date, day, end, month, remarks, start, worked_time, year, updateTitle;
+        Bundle bundle = this.getIntent().getExtras();
+
+        date = bundle.getString("date");
+        int dateLen = date.length();
+        if(dateLen > 1) {
+            date = (date.charAt(dateLen - 2) == '0') ? date.substring(dateLen - 1, dateLen) : date.substring(dateLen - 2, dateLen);
+        }
+        day = bundle.getString("day");
+        end = bundle.getString("end");
+        month= bundle.getString("month");
+        int monthLen = month.length();
+        month = (month.charAt(monthLen - 2) == '0') ? month.substring(monthLen - 1, monthLen) : month.substring(monthLen - 2, monthLen);
+        remarks = bundle.getString("remarks");
+        start = bundle.getString("start");
+        worked_time = bundle.getString("worked_time");
+        year = bundle.getString("year");
+
+        updateTitle = year + "年" + month + "月" + date + "日" + "(" + day + ")";
+        tvUpdateTitle.setText(updateTitle);
+        etStrTime_update.setText(start);
+        etEndTime_update.setText(end);
+        etDescription_update.setText(remarks);
+
 
         ivBackToMain.setOnClickListener(new View.OnClickListener() {
             @Override

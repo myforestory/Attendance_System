@@ -10,13 +10,15 @@ public class MainInfo {
     private String end;
     private String worked_time;
     private String remarks;
+    private String month;
+    private String year;
 
 
     public MainInfo() {
 
     }
 
-    public MainInfo(int type, String id, String date, String day, String start, String end, String worked_time, String remarks) {
+    public MainInfo(int type, String id, String date, String day, String start, String end, String worked_time, String remarks, String month, String year) {
         this.type = type;
         this.id = id;
         this.date = date;
@@ -25,6 +27,8 @@ public class MainInfo {
         this.end = end;
         this.worked_time = worked_time;
         this.remarks = remarks;
+        this.month = month;
+        this.year = year;
     }
 
     public int getType() {
@@ -89,5 +93,21 @@ public class MainInfo {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
+    }
+
+    public String getMonth() {
+        return month;
+    }
+
+    public void setMonth(String month) {
+        this.month = month;
+    }
+
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
     }
 }

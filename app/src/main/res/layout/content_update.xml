@@ -39,6 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/etEndTime_update"
         android:layout_marginTop="100dp"
+        android:textSize="@dimen/dp_12"
         android:ems="10"
         android:inputType="textPersonName"
         android:hint="@string/update_hint_etDescription_update"

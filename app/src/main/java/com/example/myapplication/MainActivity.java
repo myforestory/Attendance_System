@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.SpannableString;
@@ -23,6 +24,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +34,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -55,18 +59,37 @@ public class MainActivity extends AppCompatActivity
     private CharSequence mTitle;
     public static final int ITEM = 0;
     public static final int SECTION = 1;
+    ArrayList <MainInfo> mainInfoList;
+    ArrayList <MainInfo> mainInfoList2;
+    Bundle bundle;
+
+
+    private final static String logoutUrl = "http://kintai-api.ios.tokyo/user/logout";
+    String loginToken;
+    SharedPreferences logoutKey;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        bundle = this.getIntent().getExtras();
+        mainInfoList = new ArrayList<>();
+        mainInfoList2 = new ArrayList<>();
         setTitle("");
         setContentView(R.layout.activity_main);
+
 
         drawerAction();
 
         setMainInfo();
         updateTitleTime();
+
+        final Button button0 = findViewById(R.id.btUpdate);
+        button0.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                getMainInfoData("2019", "06");
+            }
+        });
     }
 
 
@@ -115,20 +138,25 @@ public class MainActivity extends AppCompatActivity
             intent.setClass(MainActivity.this, LoginActivity.class);
             Bundle bundle = new Bundle();
 
+            OkHttpGetPost.postAsycHttp(logoutUrl, new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    logoutKey = getSharedPreferences("logoutKey", MODE_PRIVATE);
+                    logoutKey.edit()
+                            .putString("userName", "")
+                            .putString("password", "")
+                            .putString("loginToken", "").commit();
+                }
+            }, null,"Authorization", loginToken);
+
             intent.putExtras(bundle);
             startActivity(intent);
         }
-//        } else if (id == R.id.nav_gallery) {
-//
-//        } else if (id == R.id.nav_slideshow) {
-//
-//        } else if (id == R.id.nav_tools) {
-//
-//        } else if (id == R.id.nav_share) {
-//
-//        } else if (id == R.id.nav_send) {
-//
-//        }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -158,12 +186,16 @@ public class MainActivity extends AppCompatActivity
             }
 
             public void onDrawerOpened(View drawerView) {
+                String name, email;
+                name = bundle.getString("name");
+                email = bundle.getString("email");
+
                 TextView userNameTextView = (TextView) findViewById(R.id.user_name);
                 TextView userEmailTextView = (TextView) findViewById(R.id.user_email);
-                SpannableString nameString = new SpannableString("曾鄢畇");
+                SpannableString nameString = new SpannableString(name);
                 nameString.setSpan(new UnderlineSpan(), 0, nameString.length(), 0);
                 userNameTextView.setText(nameString);
-                SpannableString emailString = new SpannableString("sou@marcopolos.co.jp");
+                SpannableString emailString = new SpannableString(email);
                 userEmailTextView.setText(emailString);
                 setTitle(mDrawerTitle);
                 invalidateOptionsMenu();
@@ -182,13 +214,11 @@ public class MainActivity extends AppCompatActivity
         year = c.get(Calendar.YEAR);
         month = c.get(Calendar.MONTH)+1;
 
-
-        getMainInfoData("2019", "06");
+        getMainInfoData("2019", "05");
     }
 
-    public void getMainInfoData(final String year,final String month) {
-        String loginToken, userId, getDataUrl;
-        Bundle bundle = this.getIntent().getExtras();
+    public void getMainInfoData(final String year, final String month) {
+        String userId, getDataUrl;
         String dataTime = year + "-" + month;
 
         loginToken = bundle.getString("loginToken");
@@ -207,28 +237,29 @@ public class MainActivity extends AppCompatActivity
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
-                    ArrayList <MainInfo>mainInfoList;
+
                     String responseBody, todayDate;
 
                     responseBody = response.body().string();
                     try {
-                        mainInfoList = new ArrayList<>();
 
-                        Log.d("ggggggggggg", responseBody);
+                        Log.d("responseBody", responseBody);
                         JSONObject jsonObject = new JSONObject(responseBody);
                         JSONArray monthJsonArray = jsonObject.getJSONObject("data").getJSONArray("days");
                         todayDate = jsonObject.getJSONObject("data").getJSONObject("today").getString("date");
                         Log.d("todayDate", todayDate);
                         String date, day, start, end, worked_time, remarks;
 
-                        mainInfoList.add(new MainInfo(SECTION,
+                        mainInfoList2.add(new MainInfo(SECTION,
                                 "",
                                 "1",
-                                year + "年" + 6 + "月",
+                                year + "年" + month + "月",
                                 "",
                                 "",
                                 "",
-                                ""));
+                                "",
+                                month,
+                                year));
 
                         for (int i = 0; i < monthJsonArray.length(); i++) {
                             JSONObject row = monthJsonArray.getJSONObject(i);
@@ -240,15 +271,18 @@ public class MainActivity extends AppCompatActivity
                             worked_time = mainInfoMap.get("worked_time");
                             remarks = mainInfoMap.get("remarks");
 
-                            mainInfoList.add(new MainInfo(ITEM,
+                            mainInfoList2.add(new MainInfo(ITEM,
                                     "",
                                     date,
                                     day,
                                     start,
                                     end,
                                     worked_time,
-                                    remarks));
+                                    remarks,
+                                    month,
+                                    year));
                         }
+                        mainInfoList.addAll(0, mainInfoList2);
 
                         findViews(mainInfoList);
                     } catch (JSONException e) {
@@ -257,23 +291,32 @@ public class MainActivity extends AppCompatActivity
                 }
             }, null, "Authorization", loginToken);
         }
-
-        // MainInfo儲存ListView各列對應的資料
-//        mainInfoList = new ArrayList<>();
-//        mainInfoList.add(new MainInfo(SECTION,"", "1", "2019年6月", "", "", "", ""));
-//
-//        mainInfoList.add(new MainInfo(ITEM,"", "1", "土", "9:30", "18:30", "8:00", "アンドロイド10倍CFDホーム画面ロードのバグ修正"));
     }
 
     public void findViews(final ArrayList <MainInfo>mainInfoList) {
         lvMainInfo = (ListView) findViewById(R.id.lvMainInfo);
+
+//        com.example.myapplication.ListViewScroll lvMainInfoScroll = (com.example.myapplication.ListViewScroll) findViewById(R.id.lvMainInfo);
+//
+//        lvMainInfoScroll.setOnDetectScrollListener(new OnDetectScrollListener() {
+//            @Override
+//            public void onUpScrolling() {
+//                Log.d("gggggg", "GGGGGGGGGG");
+//            }
+//
+//            @Override
+//            public void onDownScrolling() {
+//                Log.d("gggggg", "sssssssssssss");
+//            }
+//        });
+
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 lvMainInfo.setAdapter(new MainInfoAdapter(MainActivity.this, mainInfoList));
+//                lvMainInfo.setSelection(10);
             }
         });
-
 
         lvMainInfo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -283,15 +326,19 @@ public class MainActivity extends AppCompatActivity
                 Bundle bundle = new Bundle();
 
                 MainInfo mainInfo = (MainInfo) parent.getItemAtPosition(position);
-                String date = mainInfo.getDate();
-                bundle.putString("date", date);
+                bundle.putString("date", mainInfo.getDate());
+                bundle.putString("day", mainInfo.getDay());
+                bundle.putString("end", mainInfo.getEnd());
+                bundle.putString("month", mainInfo.getMonth());
+                bundle.putString("remarks", mainInfo.getRemarks());
+                bundle.putString("start", mainInfo.getStart());
+                bundle.putString("worked_time", mainInfo.getWorked_time());
+                bundle.putString("year", mainInfo.getYear());
 
                 intent.putExtras(bundle);
                 startActivity(intent);
-
             }
         });
-
     }
 
     public class MainInfoAdapter extends BaseAdapter implements PinnedSectionListView.PinnedSectionListAdapter {
@@ -371,13 +418,16 @@ public class MainActivity extends AppCompatActivity
                 }
 
                 holder.tvDate.setText(maininfo.getDate());
+                if ("1".equals(maininfo.getDate())){
+
+                }
                 if (maininfo.getDate().length() == 2) {
                     holder.tvDate.setTextSize(getResources().getDimension(R.dimen.dp_12));
                 } else {
                     holder.tvDate.setTextSize(getResources().getDimension(R.dimen.dp_16));
                 }
                 holder.tvDay.setText(maininfo.getDay());
-                if ("土".equals(maininfo.getDay()) || "日".equals(maininfo.getDay()) || "土".equals(maininfo.getDay())) {
+                if ("土".equals(maininfo.getDay()) || "日".equals(maininfo.getDay()) || "休".equals(maininfo.getDay())) {
                     convertView.setBackgroundColor(getResources().getColor(R.color.colorMainLightGrey));
                 } else {
                     convertView.setBackgroundColor(getResources().getColor(R.color.colorMainWhite));
