@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity
     private TextView txTitleDate;
     private TextView txTitleTime;
     private Button btUpdate;
+    private MainInfoAdapter mainInfoAdapter;
     private ActionBarDrawerToggle mDrawerToggle;
     private SwipeRefreshLayout laySwipe;
     private CharSequence mDrawerTitle;
@@ -288,17 +289,15 @@ public class MainActivity extends AppCompatActivity
         laySwipe = (SwipeRefreshLayout) findViewById(R.id.laySwipe);
         laySwipe.setOnRefreshListener(onSwipeToRefresh);
         laySwipe.setColorSchemeResources(
-                android.R.color.holo_red_light,
-                android.R.color.holo_blue_light,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light);
-
+        android.R.color.holo_red_light,
+        android.R.color.holo_blue_light,
+        android.R.color.holo_green_light,
+        android.R.color.holo_orange_light);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                lvMainInfo.setAdapter(new MainInfoAdapter(MainActivity.this, mainInfoList));
-
-
+                mainInfoAdapter = new MainInfoAdapter(getApplicationContext(), mainInfoList);
+                lvMainInfo.setAdapter(mainInfoAdapter);
             }
         });
         lvMainInfo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -329,120 +328,9 @@ public class MainActivity extends AppCompatActivity
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                lvMainInfo.setSelectionFromTop(10, 90);
+             //   lvMainInfo.setSelectionFromTop(10, 90);
             }
         });
-    }
-
-    public class MainInfoAdapter extends BaseAdapter implements PinnedSectionListView.PinnedSectionListAdapter {
-        private LayoutInflater layoutInflater;
-        private ArrayList<MainInfo> mainInfoList;
-        private Context context;
-
-        public ArrayList<MainInfo> getList() {
-            return mainInfoList;
-        }
-
-        public void setList(ArrayList<MainInfo> list) {
-            if (list != null) {
-                this.mainInfoList = list;
-            } else {
-                mainInfoList = new ArrayList<MainInfo>();
-            }
-        }
-        public MainInfoAdapter(Context context, ArrayList<MainInfo> mainInfoList) {
-            super();
-            this.mainInfoList = mainInfoList;
-            this.context=context;
-
-            layoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        }
-
-        @Override
-        public MainInfo getItem(int position) {
-            return mainInfoList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mainInfoList.size();
-        }
-
-        @Override
-        public int getViewTypeCount() {
-            return 2;
-        }
-
-        @Override
-        public int getItemViewType(int position) {
-            return (getItem(position)).getType();
-        }
-
-        @Override
-        public boolean isItemViewTypePinned(int viewType) {
-            return viewType == SECTION;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return Integer.valueOf(mainInfoList.get(position).getDate());
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-
-            ViewHolder holder = null;
-            MainInfo maininfo = mainInfoList.get(position);
-            if (maininfo.getType() == ITEM) {
-                if (convertView == null) {
-                    holder = new ViewHolder();
-                    convertView = layoutInflater.inflate(R.layout.listview_maininfo, parent, false);
-                    holder.tvDate = (TextView) convertView.findViewById(R.id.tvDate);
-                    holder.tvDay = (TextView) convertView.findViewById(R.id.tvDay);
-                    holder.tvStart = (TextView) convertView.findViewById(R.id.tvStart);
-                    holder.tvEnd = (TextView) convertView.findViewById(R.id.tvEnd);
-                    holder.tvWorked_time = (TextView) convertView.findViewById(R.id.tvWorked_time);
-                    holder.tvRemarks = (TextView) convertView.findViewById(R.id.tvRemarks);
-                    convertView.setTag(holder);
-                } else {
-                    holder = (ViewHolder) convertView.getTag();
-                }
-                holder.tvDate.setText(maininfo.getDate());
-                if ("1".equals(maininfo.getDate())){
-                }
-                if (maininfo.getDate().length() == 2) {
-                    holder.tvDate.setTextSize(getResources().getDimension(R.dimen.dp_12));
-                } else {
-                    holder.tvDate.setTextSize(getResources().getDimension(R.dimen.dp_16));
-                }
-                holder.tvDay.setText(maininfo.getDay());
-                if ("土".equals(maininfo.getDay()) || "日".equals(maininfo.getDay()) || "休".equals(maininfo.getDay())) {
-                    convertView.setBackgroundColor(getResources().getColor(R.color.colorMainLightGrey));
-                } else {
-                    convertView.setBackgroundColor(getResources().getColor(R.color.colorMainWhite));
-                }
-                holder.tvStart.setText(maininfo.getStart());
-                holder.tvEnd.setText(maininfo.getEnd());
-                holder.tvWorked_time.setText(maininfo.getWorked_time());
-                holder.tvRemarks.setText(maininfo.getRemarks());
-            } else {
-                if (convertView == null) {
-                    holder = new ViewHolder();
-                    convertView = layoutInflater.inflate(R.layout.listview_title, parent, false);
-                    holder.tvDate = (TextView) convertView.findViewById(R.id.tvTitle);
-                    convertView.setTag(holder);
-                } else {
-                    holder = (ViewHolder) convertView.getTag();
-                }
-                holder.tvDate.setText(maininfo.getDay());
-            }
-
-            return convertView;
-        }
-
-        private class ViewHolder {
-            TextView tvDate, tvDay, tvStart, tvEnd, tvWorked_time, tvRemarks;
-        }
     }
 
     public void updateTitleTime() {
@@ -528,7 +416,7 @@ public class MainActivity extends AppCompatActivity
 
         btUpdate.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-//                getMainInfoData("2019", "06");
+
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 DateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
@@ -682,6 +570,7 @@ public class MainActivity extends AppCompatActivity
                 public void run() {
                     laySwipe.setRefreshing(false);
                     Toast.makeText(getApplicationContext(), "Refresh done!", Toast.LENGTH_SHORT).show();
+                     getMainInfoData("2019", "06");
                 }
             }, 300);
         }

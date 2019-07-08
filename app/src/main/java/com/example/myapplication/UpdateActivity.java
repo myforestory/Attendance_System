@@ -57,14 +57,6 @@ public class UpdateActivity extends AppCompatActivity {
     private TextView etStrTime_update;
     private TextView etEndTime_update;
     private TextView etDescription_update;
-
-    private ListView lvTeam;
-    private ListView lvMainInfo;
-    private List<MainInfo> mainInfoList;
-    private ActionBarDrawerToggle mDrawerToggle;
-    private CharSequence mDrawerTitle;
-    private CharSequence mTitle;
-
     static int nowHour, nowMin, nowYear, nowMonth, nowDay;
     String loginToken, userId, updateUrl, updateYear, updateMonth, updateDate, name, email;
 

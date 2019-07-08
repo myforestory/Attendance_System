@@ -40,9 +40,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_70"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_12"
         android:contentDescription="@string/main_disability_StrImg"
-        app:srcCompat="@drawable/ic_play" />
+         />
 
     <TextView
         android:id="@+id/tvStart"
@@ -62,7 +62,7 @@
         android:layout_alignBottom="@id/imgStr"
         android:layout_marginStart="@dimen/dp_190"
         android:contentDescription="@string/main_disability_endImg"
-        app:srcCompat="@drawable/ic_power_setting" />
+        />
 
     <TextView
         android:id="@+id/tvEnd"
