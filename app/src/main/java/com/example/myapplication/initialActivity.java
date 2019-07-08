@@ -99,13 +99,13 @@ public class initialActivity extends AppCompatActivity {
     private Boolean checkInfo() {
         Boolean isMatch = false;
 
-        loginUserName = getSharedPreferences("loginKey", MODE_PRIVATE).getString("userName", "");
-        loginPassword = getSharedPreferences("loginKey", MODE_PRIVATE).getString("password", "");
-        loginLoginToken = getSharedPreferences("loginKey", MODE_PRIVATE).getString("loginToken", "");
+        loginUserName = getSharedPreferences("loginKey", MODE_PRIVATE).getString("userName", "0");
+        loginPassword = getSharedPreferences("loginKey", MODE_PRIVATE).getString("password", "0");
+        loginLoginToken = getSharedPreferences("loginKey", MODE_PRIVATE).getString("loginToken", "0");
 
-        logoutUserName = getSharedPreferences("logoutKey", MODE_PRIVATE).getString("userName", "");
-        logoutPassword = getSharedPreferences("logoutKey", MODE_PRIVATE).getString("password", "");
-        logoutLoginToken = getSharedPreferences("logoutKey", MODE_PRIVATE).getString("loginToken", "");
+        logoutUserName = getSharedPreferences("logoutKey", MODE_PRIVATE).getString("userName", "1");
+        logoutPassword = getSharedPreferences("logoutKey", MODE_PRIVATE).getString("password", "1");
+        logoutLoginToken = getSharedPreferences("logoutKey", MODE_PRIVATE).getString("loginToken", "1");
 
         if(loginUserName.equals(logoutUserName) && loginPassword.equals(logoutPassword) && loginLoginToken.equals(logoutLoginToken)) {
             isMatch = true;

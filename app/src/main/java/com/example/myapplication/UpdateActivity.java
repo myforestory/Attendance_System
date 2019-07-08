@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.format.DateFormat;
 import android.text.style.UnderlineSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,14 +31,23 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 public class UpdateActivity extends AppCompatActivity {
 
@@ -54,18 +65,14 @@ public class UpdateActivity extends AppCompatActivity {
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
 
+    static int nowHour, nowMin, nowYear, nowMonth, nowDay;
+    String loginToken, userId, updateUrl, updateYear, updateMonth, updateDate, name, email;
 
-    static int hour, min;
-
-    TextView txtdate, txttime, txttime2;
-    TextView btntimepicker, btndatepicker, btntimepicker2;
-    Button ggg;
+    TextView txtdate, txttime, txttime2, btntimepicker, btndatepicker, btntimepicker2;
 
     java.sql.Time timeValue;
     SimpleDateFormat format;
     Calendar c;
-    int year, month, day;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,13 +121,14 @@ public class UpdateActivity extends AppCompatActivity {
 
     public void findViews() {
         tvUpdateTitle = (TextView) findViewById(R.id.tvUpdateTitle);
-        ivBackToMain = (ImageView) findViewById(R.id.ivSave);
-        ivSave = (ImageView) findViewById(R.id.ivBackToMain);
+        ivBackToMain = (ImageView) findViewById(R.id.ivBackToMain);
+        ivSave = (ImageView) findViewById(R.id.ivSave);
         etStrTime_update = (EditText) findViewById(R.id.etStrTime_update);
         etEndTime_update = (EditText) findViewById(R.id.etEndTime_update);
         etDescription_update = (EditText)findViewById(R.id.etDescription_update);
         String date, day, end, month, remarks, start, worked_time, year, updateTitle;
-        Bundle bundle = this.getIntent().getExtras();
+        final Bundle bundle = this.getIntent().getExtras();
+
 
         date = bundle.getString("date");
         int dateLen = date.length();
@@ -131,7 +139,9 @@ public class UpdateActivity extends AppCompatActivity {
         end = bundle.getString("end");
         month= bundle.getString("month");
         int monthLen = month.length();
-        month = (month.charAt(monthLen - 2) == '0') ? month.substring(monthLen - 1, monthLen) : month.substring(monthLen - 2, monthLen);
+        if(monthLen > 1) {
+            month = (month.charAt(monthLen - 2) == '0') ? month.substring(monthLen - 1, monthLen) : month.substring(monthLen - 2, monthLen);
+        }
         remarks = bundle.getString("remarks");
         start = bundle.getString("start");
         worked_time = bundle.getString("worked_time");
@@ -154,7 +164,7 @@ public class UpdateActivity extends AppCompatActivity {
         ivSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UpdateActivity.this.finish();
+                updateInfo(bundle);
             }
         });
     }
@@ -231,8 +241,8 @@ public class UpdateActivity extends AppCompatActivity {
     }
 
     public void setTitleCurrentTime() {
-        TextView titleDate = (TextView) findViewById(R.id.titleDate);
-        TextView titleTime = (TextView) findViewById(R.id.titleTime);
+        TextView titleDate = (TextView) findViewById(R.id.txTitleDate);
+        TextView titleTime = (TextView) findViewById(R.id.txTitleTime);
 
         Calendar c = new GregorianCalendar(TimeZone.getTimeZone("GMT-11:00"), Locale.US);
 
@@ -247,63 +257,19 @@ public class UpdateActivity extends AppCompatActivity {
 
     private void setTimepicker() {
         c = Calendar.getInstance();
-        hour = c.get(Calendar.HOUR_OF_DAY);
-        min = c.get(Calendar.MINUTE);
+        nowHour = c.get(Calendar.HOUR_OF_DAY);
+        nowMin = c.get(Calendar.MINUTE);
 
-        year = c.get(Calendar.YEAR);
-        month = c.get(Calendar.MONTH);
-        day = c.get(Calendar.DAY_OF_MONTH);
+        nowYear = c.get(Calendar.YEAR);
+        nowMonth = c.get(Calendar.MONTH);
+        nowDay = c.get(Calendar.DAY_OF_MONTH);
 
-        //txtdate = (TextView) findViewById(R.id.etEndTime_update);
         txttime = (TextView) findViewById(R.id.etStrTime_update);
         txttime2 = (TextView) findViewById(R.id.etEndTime_update);
 
-//        btndatepicker =(Button)findViewById(R.id.ggg);
         btntimepicker =(TextView) findViewById(R.id.etStrTime_update);
         btntimepicker2 =(TextView) findViewById(R.id.etEndTime_update);
 
-//        btndatepicker.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Toast.makeText(UpdateActivity.this, "YYYYYY", Toast.LENGTH_SHORT).show();
-//                // Get Current Date
-//
-//                DatePickerDialog dd = new DatePickerDialog(UpdateActivity.this,
-//                        new DatePickerDialog.OnDateSetListener() {
-//
-//                            @Override
-//                            public void onDateSet(DatePicker view, int year,
-//                                                  int monthOfYear, int dayOfMonth) {
-//
-//                                try {
-//                                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-//                                    String dateInString = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
-//                                    Date date = formatter.parse(dateInString);
-//
-//                                    txtdate.setText(formatter.format(date).toString());
-//
-//                                    formatter = new SimpleDateFormat("dd/MMM/yyyy");
-//
-//                                    txtdate.setText(txtdate.getText().toString()+"\n"+formatter.format(date).toString());
-//
-//                                    formatter = new SimpleDateFormat("dd-MM-yyyy");
-//
-//                                    txtdate.setText(txtdate.getText().toString()+"\n"+formatter.format(date).toString());
-//
-//                                    formatter = new SimpleDateFormat("dd.MMM.yyyy");
-//
-//                                    txtdate.setText(txtdate.getText().toString()+"\n"+formatter.format(date).toString());
-//
-//                                } catch (Exception ex) {
-//
-//                                }
-//
-//
-//                            }
-//                        }, year, month, day);
-//                dd.show();
-//            }
-//        });
         btntimepicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -326,7 +292,7 @@ public class UpdateActivity extends AppCompatActivity {
                                 }
                             }
                         },
-                        hour, min,
+                        nowHour, nowMin,
                         DateFormat.is24HourFormat(UpdateActivity.this)
                 );
                 td.show();
@@ -354,7 +320,7 @@ public class UpdateActivity extends AppCompatActivity {
                                 }
                             }
                         },
-                        hour, min,
+                        nowHour, nowMin,
                         DateFormat.is24HourFormat(UpdateActivity.this)
                 );
                 td.show();
@@ -381,5 +347,66 @@ public class UpdateActivity extends AppCompatActivity {
         return formattedTime;
     }
 
+    private void updateInfo(Bundle bundle) {
+        userId = bundle.getString("userId");
+        loginToken = bundle.getString("loginToken");
+        updateYear = bundle.getString("year");
+        updateMonth = bundle.getString("month");
+        updateDate = bundle.getString("date");
+        name = bundle.getString("name");
+        email = bundle.getString("email");
 
+        String dataTime = updateYear + "-" + updateMonth + "-" +updateDate;
+        String start = dataTime + " " + etStrTime_update.getText() + ":00";
+        String end = dataTime + " " + etEndTime_update.getText() + ":00";
+        String remarks = etDescription_update.getText().toString();
+        HashMap<String, String> updateMap = new HashMap<String, String>();
+        updateMap.put("start", start);
+        updateMap.put("end", end);
+        Log.d("start",  start);
+        Log.d("end",  end);
+        if("".equals(remarks)){
+            remarks = " ";
+        }
+        updateMap.put("remarks", remarks);
+
+        updateUrl = "http://kintai-api.ios.tokyo/user/" + userId + "/date/" + dataTime;
+        Log.d("updateUrl", updateUrl);;
+
+        OkHttpGetPost.postAsycHttp(updateUrl, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Toast.makeText(UpdateActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                Log.d("onFailure",  e.toString());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseBody;
+                responseBody = response.body().string();
+                Log.d("updateResponseBody", responseBody);
+                Log.d("loginToken",  loginToken);
+
+//                try {
+
+//                    JSONObject jsonObject = new JSONObject(responseBody);
+
+                    Log.d("responseBody", responseBody);
+                    Intent intent = new Intent(UpdateActivity.this, MainActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("loginToken", loginToken);
+                    bundle.putString("userId", userId);
+                    bundle.putString("name",name);
+                    bundle.putString("email", email);
+                    intent.putExtras(bundle);
+
+                    startActivity(intent);
+                    finish();
+
+//                } catch (JSONException e) {
+//                    Log.d("JSONException", e.toString());
+//                }
+            }
+        }, updateMap, "Authorization", loginToken);
+    }
 }

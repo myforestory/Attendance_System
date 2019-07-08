@@ -32,12 +32,14 @@
 
 
                 <TextView
-                    android:id="@+id/titleDate"
+                    android:id="@+id/txTitleDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:paddingRight="@dimen/dp_100"
                     android:text=""
+                    android:clickable="true"
+                    android:onClick="titleONClick"
                     android:textColor="@color/colorMainWhite"
                     android:textSize="@dimen/dp_20" />
 
@@ -45,26 +47,28 @@
                     android:id="@+id/btUpdate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignRight="@+id/titleDate"
-                    android:layout_alignTop="@id/titleDate"
-                    android:layout_alignBottom="@id/titleTime"
+                    android:layout_alignRight="@+id/txTitleDate"
+                    android:layout_alignTop="@id/txTitleDate"
+                    android:layout_alignBottom="@id/txTitleTime"
                     android:layout_marginTop="@dimen/dp_3"
                     android:layout_marginBottom="@dimen/dp_2"
                     android:layout_marginRight="@dimen/dp_6"
-                    android:background="@drawable/style_button_main"
+                    android:background="@drawable/style_button_red"
                     android:gravity="center"
                     android:text="出勤"
                     android:textColor="@color/colorMainWhite"
                     android:textSize="@dimen/dp_18" />
 
                 <TextView
-                    android:id="@+id/titleTime"
+                    android:id="@+id/txTitleTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/titleDate"
+                    android:layout_below="@+id/txTitleDate"
                     android:gravity="center"
                     android:paddingRight="@dimen/dp_100"
                     android:text=""
+                    android:clickable="true"
+                    android:onClick="titleONClick"
                     android:textColor="@color/colorMainWhite"
                     android:textSize="@dimen/dp_14" />
 
