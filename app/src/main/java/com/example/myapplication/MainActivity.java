@@ -322,23 +322,25 @@ public class MainActivity extends AppCompatActivity
                 Intent intent = new Intent();
                 intent.setClass(MainActivity.this, UpdateActivity.class);
                 Bundle bundle = new Bundle();
-
                 MainInfo mainInfo = (MainInfo) parent.getItemAtPosition(position);
-                bundle.putString("date", mainInfo.getDate());
-                bundle.putString("day", mainInfo.getDay());
-                bundle.putString("end", mainInfo.getEnd());
-                bundle.putString("month", mainInfo.getMonth());
-                bundle.putString("remarks", mainInfo.getRemarks());
-                bundle.putString("start", mainInfo.getStart());
-                bundle.putString("worked_time", mainInfo.getWorked_time());
-                bundle.putString("year", mainInfo.getYear());
-                bundle.putString("loginToken", loginToken);
-                bundle.putString("userId", userId);
-                bundle.putString("name", name);
-                bundle.putString("email", email);
 
-                intent.putExtras(bundle);
-                startActivity(intent);
+                if(mainInfo.getType() == ITEM) {
+                    bundle.putString("date", mainInfo.getDate());
+                    bundle.putString("day", mainInfo.getDay());
+                    bundle.putString("end", mainInfo.getEnd());
+                    bundle.putString("month", mainInfo.getMonth());
+                    bundle.putString("remarks", mainInfo.getRemarks());
+                    bundle.putString("start", mainInfo.getStart());
+                    bundle.putString("worked_time", mainInfo.getWorked_time());
+                    bundle.putString("year", mainInfo.getYear());
+                    bundle.putString("loginToken", loginToken);
+                    bundle.putString("userId", userId);
+                    bundle.putString("name", name);
+                    bundle.putString("email", email);
+
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
             }
         });
         runOnUiThread(new Runnable() {

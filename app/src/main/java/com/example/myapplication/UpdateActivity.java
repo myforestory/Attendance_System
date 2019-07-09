@@ -60,8 +60,6 @@ public class UpdateActivity extends AppCompatActivity {
     static int nowHour, nowMin, nowYear, nowMonth, nowDay;
     String loginToken, userId, updateUrl, updateYear, updateMonth, updateDate, name, email;
 
-    TextView txtdate, txttime, txttime2, btntimepicker, btndatepicker, btntimepicker2;
-
     java.sql.Time timeValue;
     SimpleDateFormat format;
     Calendar c;
@@ -256,13 +254,12 @@ public class UpdateActivity extends AppCompatActivity {
         nowMonth = c.get(Calendar.MONTH);
         nowDay = c.get(Calendar.DAY_OF_MONTH);
 
-        txttime = (TextView) findViewById(R.id.etStrTime_update);
-        txttime2 = (TextView) findViewById(R.id.etEndTime_update);
+        setTimeClock(etStrTime_update);
+        setTimeClock(etEndTime_update);
+    }
 
-        btntimepicker =(TextView) findViewById(R.id.etStrTime_update);
-        btntimepicker2 =(TextView) findViewById(R.id.etEndTime_update);
-
-        btntimepicker.setOnClickListener(new View.OnClickListener() {
+    private void setTimeClock(final TextView txttime) {
+        txttime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 TimePickerDialog td = new TimePickerDialog(UpdateActivity.this,
@@ -287,34 +284,10 @@ public class UpdateActivity extends AppCompatActivity {
                         nowHour, nowMin,
                         DateFormat.is24HourFormat(UpdateActivity.this)
                 );
-                td.show();
-            }
-        });
-
-        btntimepicker2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TimePickerDialog td = new TimePickerDialog(UpdateActivity.this,
-                        android.R.style.Theme_Holo_Light_Dialog_NoActionBar,
-                        new TimePickerDialog.OnTimeSetListener() {
-                            @Override
-                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                                try {
-                                    String dtStart = String.valueOf(hourOfDay) + ":" + String.valueOf(minute);
-                                    format = new SimpleDateFormat("HH:mm");
-
-                                    timeValue = new java.sql.Time(format.parse(dtStart).getTime());
-                                    txttime2.setText(timeFormattedRoundDown(String.valueOf(timeValue)));
-//                                    String amPm = hourOfDay % 12 + ":" + minute + " " + ((hourOfDay >= 12) ? "PM" : "AM");
-//                                    txttime2.setText(amPm + "\n" + String.valueOf(timeValue));
-                                } catch (Exception ex) {
-                                    txttime2.setText(ex.getMessage().toString());
-                                }
-                            }
-                        },
-                        nowHour, nowMin,
-                        DateFormat.is24HourFormat(UpdateActivity.this)
-                );
+                if(!"".equals(txttime.getText().toString())) {
+                    String txttimeArray[] = txttime.getText().toString().split(":");
+                    td.updateTime(Integer.valueOf(txttimeArray[0]), Integer.valueOf(txttimeArray[1]));
+                }
                 td.show();
             }
         });
