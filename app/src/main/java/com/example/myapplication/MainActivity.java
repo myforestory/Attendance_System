@@ -74,9 +74,11 @@ public class MainActivity extends AppCompatActivity
 
     private final static String logoutUrl = "http://kintai-api.ios.tokyo/user/logout";
     String loginToken, userId, getDataUrl, name, email, finalUpdateTime, updateUrl;
+    String updateYear, updateMonth, updateDate, todayYMD;
     SharedPreferences logoutKey, status;
     int nowYear, nowMonth, nowDate;
-    int statusCode;
+    int statusCode, todayPosition, updatePosition;
+    Boolean isInitial;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,10 +91,11 @@ public class MainActivity extends AppCompatActivity
         setTitle("");
         setContentView(R.layout.activity_main);
         status = getSharedPreferences("status", MODE_PRIVATE);
+        isInitial = true;
 
         drawerAction();
-        setBtUpdateAction();
         setInitialMainInfo();
+        setBtUpdateAction();
         updateTitleTime();
     }
 
@@ -209,9 +212,13 @@ public class MainActivity extends AppCompatActivity
 //        todayDate = c.get(Calendar.DATE);
 
         nowYear = 2019;
-        nowMonth = 5;
+        updateYear = String.valueOf(nowYear);
+        nowMonth = 6;
+        updateMonth = String.valueOf(nowMonth);
         nowDate = 10;
-
+        updateDate = String.valueOf(nowDate);
+        todayYMD = nowYear + "-" + nowMonth + "-" + nowDate;
+        todayPosition = nowDate;
         getMainInfoData(String.valueOf(nowYear), String.valueOf(nowMonth));
     }
 
@@ -236,6 +243,7 @@ public class MainActivity extends AppCompatActivity
                 public void onResponse(Call call, Response response) throws IOException {
                     String responseBody, todayDate;
                     responseBody = response.body().string();
+                    mainInfoList2.clear();
                     try {
                         Log.d("responseBody", responseBody);
                         JSONObject jsonObject = new JSONObject(responseBody);
@@ -244,7 +252,7 @@ public class MainActivity extends AppCompatActivity
                         Log.d("todayDate", todayDate);
                         String date, day, start, end, worked_time, remarks;
 
-                        mainInfoList.add(new MainInfo(SECTION,
+                        mainInfoList2.add(new MainInfo(SECTION,
                                 "",
                                 "1",
                                 year + "年" + month + "月",
@@ -265,7 +273,7 @@ public class MainActivity extends AppCompatActivity
                             worked_time = mainInfoMap.get("worked_time");
                             remarks = mainInfoMap.get("remarks");
 
-                            mainInfoList.add(new MainInfo(ITEM,
+                            mainInfoList2.add(new MainInfo(ITEM,
                                     "",
                                     date,
                                     day,
@@ -276,6 +284,14 @@ public class MainActivity extends AppCompatActivity
                                     month,
                                     year));
                         }
+                        mainInfoList.addAll(0,mainInfoList2);
+                        updatePosition = mainInfoList2.size();
+                        if (isInitial) {
+                            todayPosition = todayPosition;
+                        } else {
+                            todayPosition = todayPosition + mainInfoList2.size();
+                        }
+                        Log.d("todayPosition", String.valueOf(todayPosition));
                         findViews(mainInfoList);
                     } catch (JSONException e) {}
                 }
@@ -328,7 +344,11 @@ public class MainActivity extends AppCompatActivity
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-             //   lvMainInfo.setSelectionFromTop(10, 90);
+                if(isInitial) {
+                    lvMainInfo.setSelectionFromTop(todayPosition, 90);
+                } else {
+                    lvMainInfo.setSelectionFromTop(updatePosition, 90);
+                }
             }
         });
     }
@@ -467,6 +487,7 @@ public class MainActivity extends AppCompatActivity
                                 .putString("finalUpdateTime", todayDate)
                                 .commit();
                         setBtUpdateStyle();
+                        backInitInfo();
                         break;
                     case 2:
                         String end = todayDateTime;
@@ -497,9 +518,11 @@ public class MainActivity extends AppCompatActivity
                                 .putString("finalUpdateTime", todayDate)
                                 .commit();
                         setBtUpdateStyle();
+                        backInitInfo();
                         break;
                     case 3:
                         setBtUpdateStyle();
+                        backInitInfo();
                         break;
                 }
             }
@@ -535,21 +558,25 @@ public class MainActivity extends AppCompatActivity
 
     private void checkTodayTime() {
         try {
-            Date finalDate, reloadDate;
+            Date finalDate, reloadDate, todayDateFormat;
 
             finalUpdateTime = getSharedPreferences("status", MODE_PRIVATE).getString("finalUpdateTime", "");
             SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd");
             finalDate = sdFormat.parse(finalUpdateTime);
+            todayDateFormat = sdFormat.parse(todayYMD);
             Calendar c = Calendar.getInstance();
             c.setTime(finalDate);
             c.add(Calendar.DATE, 1);
             reloadDate = c.getTime();
+            Log.d("finalUpdateTime", finalUpdateTime);
+            Log.d("reloadDate", reloadDate.toString());
+            Log.d("nowDate", todayDateFormat.toString());
 
             Date nowDate = new Date();
             LocalTime startAllowed = LocalTime.of(6, 00);
             LocalTime currentTime = LocalTime.now();
 
-            if (nowDate.after(reloadDate) && currentTime.isAfter(startAllowed)) {
+            if (todayDateFormat.after(reloadDate) && currentTime.isAfter(startAllowed)) {
                 status.edit().putInt("statusCode", 1).commit();
             }
         } catch (ParseException e) {
@@ -558,7 +585,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void titleONClick(View view){
-        lvMainInfo.setSelectionFromTop(10, 90);
+        lvMainInfo.setSelectionFromTop(todayPosition, 90);
     }
 
     private SwipeRefreshLayout.OnRefreshListener onSwipeToRefresh = new SwipeRefreshLayout.OnRefreshListener() {
@@ -570,7 +597,11 @@ public class MainActivity extends AppCompatActivity
                 public void run() {
                     laySwipe.setRefreshing(false);
                     Toast.makeText(getApplicationContext(), "Refresh done!", Toast.LENGTH_SHORT).show();
-                     getMainInfoData("2019", "06");
+                    String updateDateArray[] = DateUtils.subMonth(updateYear+"-"+updateMonth+"-"+updateDate);
+                    getMainInfoData(updateDateArray[0], updateDateArray[1]);
+                    updateYear = updateDateArray[0];
+                    updateMonth = updateDateArray[1];
+                    isInitial = false;
                 }
             }, 300);
         }
@@ -603,4 +634,12 @@ public class MainActivity extends AppCompatActivity
             }
         }
     };
+
+    private void backInitInfo() {
+        isInitial = true;
+        updateYear = String.valueOf(nowYear);
+        updateMonth = String.valueOf(nowMonth);
+        updateDate = String.valueOf(nowDate);
+        todayPosition = nowDate;
+    }
 }

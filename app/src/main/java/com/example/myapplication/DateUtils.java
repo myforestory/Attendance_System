@@ -1,6 +1,11 @@
 package com.example.myapplication;
 
+import android.util.Log;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class DateUtils {
 
@@ -57,5 +62,23 @@ public class DateUtils {
                 break;
         }
         return weekday;
+    }
+
+    public static String[] subMonth(String date){
+        String[] reStrArray = new String[0];
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date dt = sdf.parse(date);
+            Calendar rightNow = Calendar.getInstance();
+            rightNow.setTime(dt);
+            rightNow.add(Calendar.MONTH, -1);
+            Date dt1 = rightNow.getTime();
+            String reStr = sdf.format(dt1);
+            reStrArray = new String[]{reStr.split("-")[0], reStr.split("-")[1]};
+            return reStrArray;
+        } catch (Exception e) {
+
+        }
+        return reStrArray;
     }
 }
