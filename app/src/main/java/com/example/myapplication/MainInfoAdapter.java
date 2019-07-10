@@ -95,9 +95,9 @@ public class MainInfoAdapter extends BaseAdapter implements PinnedSectionListVie
             if ("1".equals(maininfo.getDate())){
             }
             if (maininfo.getDate().length() == 2) {
-                holder.tvDate.setTextSize(context.getResources().getDimension(R.dimen.dp_12));
+                holder.tvDate.setTextSize(context.getResources().getDimension(R.dimen.dp_10));
             } else {
-                holder.tvDate.setTextSize(context.getResources().getDimension(R.dimen.dp_16));
+                holder.tvDate.setTextSize(context.getResources().getDimension(R.dimen.dp_12));
             }
             holder.tvDay.setText(maininfo.getDay());
             if ("土".equals(maininfo.getDay()) || "日".equals(maininfo.getDay()) || "休".equals(maininfo.getDay())) {

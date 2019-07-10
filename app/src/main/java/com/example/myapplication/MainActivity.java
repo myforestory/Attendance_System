@@ -76,9 +76,8 @@ public class MainActivity extends AppCompatActivity
     String loginToken, userId, getDataUrl, name, email, finalUpdateTime, updateUrl;
     String updateYear, updateMonth, updateDate, todayYMD;
     SharedPreferences logoutKey, status;
-    int nowYear, nowMonth, nowDate;
-    int statusCode, todayPosition, updatePosition;
-    Boolean isInitial;
+    int nowYear, nowMonth, nowDate, statusCode, todayPosition, updatePosition, callbackYear, callbackMonth, callbackDate, callPosition;
+    Boolean isInitial, isUpdate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,11 +91,13 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         status = getSharedPreferences("status", MODE_PRIVATE);
         isInitial = true;
+        isUpdate = false;
 
         drawerAction();
         setInitialMainInfo();
         setBtUpdateAction();
         updateTitleTime();
+        backFormUpdate(bundle);
     }
 
     @Override
@@ -247,6 +248,9 @@ public class MainActivity extends AppCompatActivity
                     try {
                         Log.d("responseBody", responseBody);
                         JSONObject jsonObject = new JSONObject(responseBody);
+                        if(jsonObject.getJSONObject("data") == null) {
+                            Toast.makeText(MainActivity.this, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+                        }
                         JSONArray monthJsonArray = jsonObject.getJSONObject("data").getJSONArray("days");
                         todayDate = jsonObject.getJSONObject("data").getJSONObject("today").getString("date");
                         Log.d("todayDate", todayDate);
@@ -286,8 +290,10 @@ public class MainActivity extends AppCompatActivity
                         }
                         mainInfoList.addAll(0,mainInfoList2);
                         updatePosition = mainInfoList2.size();
-                        if (isInitial) {
+                        if (isInitial && !isUpdate) {
                             todayPosition = todayPosition;
+                        } else if(isUpdate) {
+                            callPosition = callbackDate;
                         } else {
                             todayPosition = todayPosition + mainInfoList2.size();
                         }
@@ -346,8 +352,10 @@ public class MainActivity extends AppCompatActivity
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(isInitial) {
+                if(isInitial && !isUpdate) {
                     lvMainInfo.setSelectionFromTop(todayPosition, 90);
+                } else if (isUpdate) {
+                    lvMainInfo.setSelectionFromTop(callbackDate, 90);
                 } else {
                     lvMainInfo.setSelectionFromTop(updatePosition, 90);
                 }
@@ -643,5 +651,33 @@ public class MainActivity extends AppCompatActivity
         updateMonth = String.valueOf(nowMonth);
         updateDate = String.valueOf(nowDate);
         todayPosition = nowDate;
+    }
+
+    private void backFormUpdate(Bundle bundle) {
+        if(bundle.getBoolean("update")){
+            isUpdate = false;
+
+            callbackYear = bundle.getInt("callbackYear");
+            callbackMonth = bundle.getInt("callbackMonth");
+            callbackDate = bundle.getInt("callbackDate");
+            int intUpdateYear = Integer.valueOf(updateYear);
+            int intUpdateMonth = Integer.valueOf(updateMonth);
+            int intUpdateDate = Integer.valueOf(updateDate);
+            lvMainInfo = (ListView) findViewById(R.id.lvMainInfo);
+            Log.d("callbackYear", String.valueOf(callbackYear));
+            Log.d("callbackMonth", String.valueOf(callbackMonth));
+            if(callbackYear == intUpdateYear && callbackMonth == intUpdateMonth && callbackDate != intUpdateDate){
+                isUpdate = true;
+            }
+//            else if (callbackYear == intUpdateYear && callbackMonth != intUpdateMonth) {
+//                Log.d("UPDATETRUE", "GOT rrrrrrr");
+//                for(int i=intUpdateMonth; i>=callbackMonth; i--){
+//                    Log.d("callbackYear", String.valueOf(callbackYear));
+//                    Log.d("intUpdateMonth", String.valueOf(i));
+//                    getMainInfoData(String.valueOf(callbackYear), String.valueOf(i));
+//
+//                }
+//            }
+        }
     }
 }

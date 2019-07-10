@@ -363,6 +363,10 @@ public class UpdateActivity extends AppCompatActivity {
                     bundle.putString("userId", userId);
                     bundle.putString("name",name);
                     bundle.putString("email", email);
+                    bundle.putBoolean("update", true);
+                    bundle.putInt("callbackYear", Integer.valueOf(updateYear));
+                    bundle.putInt("callbackMonth", Integer.valueOf(updateMonth));
+                    bundle.putInt("callbackDate", Integer.valueOf(updateDate));
                     intent.putExtras(bundle);
 
                     startActivity(intent);

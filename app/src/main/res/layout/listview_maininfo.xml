@@ -39,10 +39,10 @@
         android:id="@+id/imgStr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_70"
+        android:layout_marginStart="@dimen/dp_90"
         android:layout_marginTop="@dimen/dp_12"
         android:contentDescription="@string/main_disability_StrImg"
-         />
+        app:srcCompat="@drawable/ic_play" />
 
     <TextView
         android:id="@+id/tvStart"
@@ -53,7 +53,7 @@
         android:padding="6dp"
         android:text="9:30"
         android:textColor="@color/colorMainBlack"
-        android:textSize="@dimen/dp_24" />
+        android:textSize="@dimen/dp_20" />
 
     <ImageView
         android:id="@+id/imgEnd"
@@ -62,7 +62,7 @@
         android:layout_alignBottom="@id/imgStr"
         android:layout_marginStart="@dimen/dp_190"
         android:contentDescription="@string/main_disability_endImg"
-        />
+        app:srcCompat="@drawable/ic_power_setting" />
 
     <TextView
         android:id="@+id/tvEnd"
@@ -73,7 +73,7 @@
         android:padding="6dp"
         android:text="18:30"
         android:textColor="@color/colorMainBlack"
-        android:textSize="@dimen/dp_24" />
+        android:textSize="@dimen/dp_20" />
 
     <TextView
         android:id="@+id/tvWorked_time"
@@ -85,20 +85,21 @@
         android:layout_marginRight="@dimen/dp_6"
         android:text="8:00"
         android:textColor="@color/colorMainBlack"
-        android:textSize="@dimen/dp_20" />
+        android:textSize="@dimen/dp_18" />
 
     <TextView
         android:id="@+id/tvRemarks"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_42"
         android:layout_alignLeft="@id/imgStr"
+        android:layout_alignRight="@id/tvEnd"
         android:layout_below="@id/imgStr"
-        android:padding="6dp"
-        android:layout_marginRight="@dimen/dp_42"
+        android:padding="3dp"
+
         android:text="アンドロイド10倍CFDホーム画面ロードのバグ修正"
         android:textSize="@dimen/dp_12"
-        android:singleLine="false"
-        android:maxLines="10"
+        android:ellipsize="end"
+        android:maxLines="2"
         android:maxEms="500"/>
-
+    <!--android:layout_marginRight="@dimen/dp_70"-->
 </RelativeLayout>
