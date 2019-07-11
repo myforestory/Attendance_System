@@ -15,7 +15,7 @@
 
     <TextView
         android:id="@+id/tvDate"
-        android:layout_width="@dimen/dp_32"
+        android:layout_width="@dimen/dp_42"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_12"
         android:gravity="center"
@@ -23,7 +23,7 @@
         android:paddingBottom="@dimen/dp_8"
         android:text="1"
         android:textColor="@color/colorMainBlack"
-        android:textSize="@dimen/dp_32" />
+        android:textSize="@dimen/dp_10" />
 
     <TextView
         android:id="@+id/tvDay"
@@ -39,7 +39,7 @@
         android:id="@+id/imgStr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_90"
+        android:layout_alignLeft="@id/tvRemarks"
         android:layout_marginTop="@dimen/dp_12"
         android:contentDescription="@string/main_disability_StrImg"
         app:srcCompat="@drawable/ic_play" />
@@ -60,7 +60,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/imgStr"
-        android:layout_marginStart="@dimen/dp_190"
+        android:layout_toLeftOf="@id/tvEnd"
         android:contentDescription="@string/main_disability_endImg"
         app:srcCompat="@drawable/ic_power_setting" />
 
@@ -69,7 +69,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@id/tvStart"
-        android:layout_toEndOf="@id/imgEnd"
+        android:layout_alignRight="@id/tvRemarks"
         android:padding="6dp"
         android:text="18:30"
         android:textColor="@color/colorMainBlack"
@@ -89,13 +89,10 @@
 
     <TextView
         android:id="@+id/tvRemarks"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_42"
-        android:layout_alignLeft="@id/imgStr"
-        android:layout_alignRight="@id/tvEnd"
+        android:layout_width="@dimen/dp_190"
+        android:layout_height="@dimen/dp_36"
+        android:layout_centerHorizontal="true"
         android:layout_below="@id/imgStr"
-        android:padding="3dp"
-
         android:text="アンドロイド10倍CFDホーム画面ロードのバグ修正"
         android:textSize="@dimen/dp_12"
         android:ellipsize="end"

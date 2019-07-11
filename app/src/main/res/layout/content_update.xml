@@ -41,7 +41,7 @@
         android:layout_marginTop="100dp"
         android:textSize="@dimen/dp_12"
         android:ems="10"
-        android:inputType="textPersonName"
+        android:inputType="textMultiLine"
         android:hint="@string/update_hint_etDescription_update"
         android:text="" />
 

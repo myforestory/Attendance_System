@@ -1,11 +1,17 @@
 package com.example.myapplication;
 
 import android.content.Context;
+import android.graphics.Point;
+import android.util.Log;
+import android.util.TypedValue;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -20,6 +26,7 @@ public class MainInfoAdapter extends BaseAdapter implements PinnedSectionListVie
     private android.content.Context context;
     public static final int ITEM = 0;
     public static final int SECTION = 1;
+    TextView txTitleDate;
 
     public ArrayList<MainInfo> getList() {
         return mainInfoList;
@@ -95,9 +102,20 @@ public class MainInfoAdapter extends BaseAdapter implements PinnedSectionListVie
             if ("1".equals(maininfo.getDate())){
             }
             if (maininfo.getDate().length() == 2) {
-                holder.tvDate.setTextSize(context.getResources().getDimension(R.dimen.dp_10));
+                holder.tvDate.setTextSize(TypedValue.COMPLEX_UNIT_PX,(int)context.getResources().getDimension(R.dimen.dp_32));
             } else {
-                holder.tvDate.setTextSize(context.getResources().getDimension(R.dimen.dp_12));
+                holder.tvDate.setTextSize(TypedValue.COMPLEX_UNIT_PX, (int)context.getResources().getDimension(R.dimen.dp_40));
+            }
+            WindowManager winMan = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+            Display display = winMan.getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            int width = size.x;
+            if(width < 500) {
+                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                params.setMargins((int)context.getResources().getDimension(R.dimen.dp_5),0,0,0);
+                holder.tvDate.setLayoutParams(params);
+
             }
             holder.tvDay.setText(maininfo.getDay());
             if ("土".equals(maininfo.getDay()) || "日".equals(maininfo.getDay()) || "休".equals(maininfo.getDay())) {
@@ -109,6 +127,7 @@ public class MainInfoAdapter extends BaseAdapter implements PinnedSectionListVie
             holder.tvEnd.setText(maininfo.getEnd());
             holder.tvWorked_time.setText(maininfo.getWorked_time());
             holder.tvRemarks.setText(maininfo.getRemarks());
+
             holder.imgStr.setBackgroundResource(R.drawable.ic_play);
             holder.imgEnd.setBackgroundResource(R.drawable.ic_power_setting);
         } else {

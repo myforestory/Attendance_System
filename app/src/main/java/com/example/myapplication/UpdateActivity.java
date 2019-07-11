@@ -1,9 +1,11 @@
 package com.example.myapplication;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -57,7 +59,9 @@ public class UpdateActivity extends AppCompatActivity {
     private TextView etStrTime_update;
     private TextView etEndTime_update;
     private TextView etDescription_update;
-    static int nowHour, nowMin, nowYear, nowMonth, nowDay;
+    private final static String logoutUrl = "http://kintai-api.ios.tokyo/user/logout";
+    SharedPreferences logoutKey;
+    static int nowHour, nowMin, nowYear, nowMonth, nowDay, position;
     String loginToken, userId, updateUrl, updateYear, updateMonth, updateDate, name, email;
 
     java.sql.Time timeValue;
@@ -230,21 +234,6 @@ public class UpdateActivity extends AppCompatActivity {
         }
     }
 
-    public void setTitleCurrentTime() {
-        TextView titleDate = (TextView) findViewById(R.id.txTitleDate);
-        TextView titleTime = (TextView) findViewById(R.id.txTitleTime);
-
-        Calendar c = new GregorianCalendar(TimeZone.getTimeZone("GMT-11:00"), Locale.US);
-
-        SimpleDateFormat df = new SimpleDateFormat("yyyy年MM月dd日");
-        SimpleDateFormat tf = new SimpleDateFormat("HH:mm:ss");
-        String formattedDate = df.format(c.getTime());
-        String formattedTime = tf.format(c.getTime());
-
-        titleDate.setText(formattedDate);
-        titleTime.setText(formattedTime);
-    }
-
     private void setTimepicker() {
         c = Calendar.getInstance();
         nowHour = c.get(Calendar.HOUR_OF_DAY);
@@ -320,10 +309,23 @@ public class UpdateActivity extends AppCompatActivity {
         updateDate = bundle.getString("date");
         name = bundle.getString("name");
         email = bundle.getString("email");
+        position = bundle.getInt("position");
+
+        String start ,end;
 
         String dataTime = updateYear + "-" + updateMonth + "-" +updateDate;
-        String start = dataTime + " " + etStrTime_update.getText() + ":00";
-        String end = dataTime + " " + etEndTime_update.getText() + ":00";
+        if(!"".equals(etStrTime_update.getText().toString())) {
+            start = dataTime + " " + etStrTime_update.getText() + ":00";
+        } else {
+            start = "";
+        }
+
+        if(!"".equals(etEndTime_update.getText().toString())) {
+            end = dataTime + " " + etEndTime_update.getText() + ":00";
+        } else {
+            end = "";
+        }
+
         String remarks = etDescription_update.getText().toString();
         HashMap<String, String> updateMap = new HashMap<String, String>();
         updateMap.put("start", start);
@@ -350,32 +352,105 @@ public class UpdateActivity extends AppCompatActivity {
                 String responseBody;
                 responseBody = response.body().string();
                 Log.d("updateResponseBody", responseBody);
-                Log.d("loginToken",  loginToken);
+                Log.d("update-loginToken",  loginToken);
 
-//                try {
+                try {
 
-//                    JSONObject jsonObject = new JSONObject(responseBody);
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    if (isLegal(jsonObject)) {
+                        Log.d("responseBody", responseBody);
+                        String start = jsonObject.getJSONObject("data").getJSONObject("updated").getString("start").split("\\s+")[1];
+                        String end = jsonObject.getJSONObject("data").getJSONObject("updated").getString("end").split("\\s+")[1];
+                        start = start.substring(0, start.length()-3);
+                        end = end.substring(0, end.length()-3);
+                        String remarks = jsonObject.getJSONObject("data").getJSONObject("updated").getString("remarks");
 
-                    Log.d("responseBody", responseBody);
-                    Intent intent = new Intent(UpdateActivity.this, MainActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("loginToken", loginToken);
-                    bundle.putString("userId", userId);
-                    bundle.putString("name",name);
-                    bundle.putString("email", email);
-                    bundle.putBoolean("update", true);
-                    bundle.putInt("callbackYear", Integer.valueOf(updateYear));
-                    bundle.putInt("callbackMonth", Integer.valueOf(updateMonth));
-                    bundle.putInt("callbackDate", Integer.valueOf(updateDate));
-                    intent.putExtras(bundle);
+                        Intent intent = new Intent(UpdateActivity.this, MainActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("loginToken", loginToken);
+                        bundle.putString("userId", userId);
+                        bundle.putString("name",name);
+                        bundle.putString("email", email);
+                        bundle.putBoolean("update", true);
+                        bundle.putInt("callbackYear", Integer.valueOf(updateYear));
+                        bundle.putInt("callbackMonth", Integer.valueOf(updateMonth));
+                        bundle.putInt("callbackDate", Integer.valueOf(updateDate));
+                        bundle.putInt("position", Integer.valueOf(position));
+                        bundle.putString("start", start);
+                        bundle.putString("end", end);
+                        bundle.putString("remarks", remarks);
 
-                    startActivity(intent);
-                    finish();
 
-//                } catch (JSONException e) {
-//                    Log.d("JSONException", e.toString());
-//                }
+
+
+                        intent.putExtras(bundle);
+
+                        setResult(Activity.RESULT_OK, intent);
+                        finish();
+                    }
+                } catch (JSONException e) {
+                    Log.d("JSONException", e.toString());
+                }
             }
         }, updateMap, "Authorization", loginToken);
     }
+
+    private Boolean isLegal (JSONObject jsonObject) {
+        Boolean isLegal = false;
+        String returnCode = "";
+        try {
+            returnCode = jsonObject.getString("code");
+            if ("E00002".equals(returnCode)) {
+                logout();
+                final String errorMsg = "重複するアカウントをログインする";
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(UpdateActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
+                    }
+                });
+                isLegal = false;
+            } else if (!returnCode.isEmpty() ) {
+                final String errorMsg = jsonObject.getString("message");;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(UpdateActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
+                    }
+                });
+                isLegal = false;
+            } else {
+                isLegal = true;
+            }
+        } catch (JSONException e) {
+        }
+        return isLegal;
+    }
+
+    private void logout() {
+        Intent intent = new Intent();
+        intent.setClass(UpdateActivity.this, LoginActivity.class);
+        Bundle bundle = new Bundle();
+
+        OkHttpGetPost.postAsycHttp(logoutUrl, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                logoutKey = getSharedPreferences("logoutKey", MODE_PRIVATE);
+                logoutKey.edit()
+                        .putString("userName", "")
+                        .putString("password", "")
+                        .putString("loginToken", "").commit();
+            }
+        }, null,"Authorization", loginToken);
+
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
+
 }
