@@ -103,7 +103,6 @@ public class MainActivity extends AppCompatActivity
 
         drawerAction();
         setInitialMainInfo();
-        setBtUpdateAction();
         updateTitleTime();
     }
 
@@ -241,6 +240,16 @@ public class MainActivity extends AppCompatActivity
                         Log.d("responseBody", responseBody);
                         JSONObject jsonObject = new JSONObject(responseBody);
                         if(isDuplicateLogin(jsonObject)) {
+
+                            final String startStatus = jsonObject.getJSONObject("data").getJSONObject("today").getString("start");
+                            final String endStatus = jsonObject.getJSONObject("data").getJSONObject("today").getString("end");
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    todayButtonStatus(startStatus, endStatus);
+                                }
+                            });
+
                             JSONArray monthJsonArray = jsonObject.getJSONObject("data").getJSONArray("days");
                             todayDate = jsonObject.getJSONObject("data").getJSONObject("today").getString("date");
                             Log.d("todayDate", todayDate);
@@ -402,7 +411,7 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public void run() {
                     laySwipe.setRefreshing(false);
-                    Toast.makeText(getApplicationContext(), "Refresh done!", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), "Refresh done!", Toast.LENGTH_SHORT).show();
                     String updateDateArray[] = DateUtils.subMonth(updateYear+"-"+updateMonth+"-"+updateDate);
                     getMainInfoData(updateDateArray[0], updateDateArray[1]);
                     updateYear = updateDateArray[0];
@@ -467,6 +476,17 @@ public class MainActivity extends AppCompatActivity
         jumpSelectionFromTop(todayPosition);
     }
 
+    private void todayButtonStatus(String startStatus, String endStatus){
+        if("".equals(startStatus)){
+            status.edit().putInt("statusCode", 1).commit();
+        } else if ("".equals(endStatus)) {
+            status.edit().putInt("statusCode", 2).commit();
+        } else {
+            status.edit().putInt("statusCode", 3).commit();
+        }
+        setBtUpdateAction();
+    }
+
     //設定按鈕動作 1:出勤 2:退勤 3:按鈕消失
     private void setBtUpdateAction() {
         btUpdate = findViewById(R.id.btUpdate);
@@ -490,7 +510,7 @@ public class MainActivity extends AppCompatActivity
 
                 String todayDate = nowYear+"-"+nowMonth+"-"+nowDate;
                 String overnightDate = DateUtils.plusOneDay(todayDate, sdf.format(cal.getTime()));
-                String todayDateTime = overnightDate + DateUtils.timeFormattedRoundDown(sdf.format(cal.getTime()));
+                String todayDateTime = overnightDate + " " +DateUtils.timeFormattedRoundDown(sdf.format(cal.getTime()));
                 Log.d("overnightDate", overnightDate);
                 ///////test/////////
 

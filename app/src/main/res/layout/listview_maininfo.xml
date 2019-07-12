@@ -85,11 +85,11 @@
         android:layout_marginRight="@dimen/dp_6"
         android:text="8:00"
         android:textColor="@color/colorMainBlack"
-        android:textSize="@dimen/dp_18" />
+        android:textSize="@dimen/dp_24" />
 
     <TextView
         android:id="@+id/tvRemarks"
-        android:layout_width="@dimen/dp_190"
+        android:layout_width="@dimen/dp_200"
         android:layout_height="@dimen/dp_36"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/imgStr"

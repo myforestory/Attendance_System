@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 import de.halfbit.pinnedsection.PinnedSectionListView;
@@ -111,12 +113,13 @@ public class MainInfoAdapter extends BaseAdapter implements PinnedSectionListVie
             Point size = new Point();
             display.getSize(size);
             int width = size.x;
+            int height = size.y;
             if(width < 500) {
-                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                params.setMargins((int)context.getResources().getDimension(R.dimen.dp_5),0,0,0);
-                holder.tvDate.setLayoutParams(params);
-
+                RelativeLayout.LayoutParams paramTvDate = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                paramTvDate.setMargins((int)context.getResources().getDimension(R.dimen.dp_5),0,0,0);
+                holder.tvDate.setLayoutParams(paramTvDate);
             }
+            Log.d("width", String.valueOf(width));
             holder.tvDay.setText(maininfo.getDay());
             if ("土".equals(maininfo.getDay()) || "日".equals(maininfo.getDay()) || "休".equals(maininfo.getDay())) {
                 convertView.setBackgroundColor(context.getResources().getColor(R.color.colorMainLightGrey));
@@ -126,7 +129,15 @@ public class MainInfoAdapter extends BaseAdapter implements PinnedSectionListVie
             holder.tvStart.setText(maininfo.getStart());
             holder.tvEnd.setText(maininfo.getEnd());
             holder.tvWorked_time.setText(maininfo.getWorked_time());
+            if(width < 500) {
+                holder.tvWorked_time.setTextSize(TypedValue.COMPLEX_UNIT_PX,(int)context.getResources().getDimension(R.dimen.dp_18));
+            }
             holder.tvRemarks.setText(maininfo.getRemarks());
+            if(width < 500) {
+                holder.tvRemarks.getLayoutParams().width = (int)context.getResources().getDimension(R.dimen.dp_180);
+            } else if (width > 1200) {
+                holder.tvRemarks.getLayoutParams().width = (int)context.getResources().getDimension(R.dimen.dp_220);
+            }
 
             holder.imgStr.setBackgroundResource(R.drawable.ic_play);
             holder.imgEnd.setBackgroundResource(R.drawable.ic_power_setting);
