@@ -311,17 +311,19 @@ public class UpdateActivity extends AppCompatActivity {
         email = bundle.getString("email");
         position = bundle.getInt("position");
 
-        String start ,end;
+        String start ,end, startDataTime, endDataTime;
 
         String dataTime = updateYear + "-" + updateMonth + "-" +updateDate;
         if(!"".equals(etStrTime_update.getText().toString())) {
-            start = dataTime + " " + etStrTime_update.getText() + ":00";
+            startDataTime = DateUtils.plusOneDay(dataTime, etStrTime_update.getText() + ":00");
+            start = startDataTime + " " + etStrTime_update.getText() + ":00";
         } else {
             start = "";
         }
 
         if(!"".equals(etEndTime_update.getText().toString())) {
-            end = dataTime + " " + etEndTime_update.getText() + ":00";
+            endDataTime = DateUtils.plusOneDay(dataTime, etEndTime_update.getText() + ":00");
+            end = endDataTime + " " + etEndTime_update.getText() + ":00";
         } else {
             end = "";
         }

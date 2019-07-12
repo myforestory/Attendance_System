@@ -105,7 +105,6 @@ public class MainActivity extends AppCompatActivity
         setInitialMainInfo();
         setBtUpdateAction();
         updateTitleTime();
-        backFormUpdate(bundle);
     }
 
     //drawer 收回
@@ -490,7 +489,9 @@ public class MainActivity extends AppCompatActivity
                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 
                 String todayDate = nowYear+"-"+nowMonth+"-"+nowDate;
-                String todayDateTime = "2019-06-10 " + DateUtils.timeFormattedRoundDown(sdf.format(cal.getTime()));
+                String overnightDate = DateUtils.plusOneDay(todayDate, sdf.format(cal.getTime()));
+                String todayDateTime = overnightDate + DateUtils.timeFormattedRoundDown(sdf.format(cal.getTime()));
+                Log.d("overnightDate", overnightDate);
                 ///////test/////////
 
                 HashMap<String, String> updateMap;
@@ -672,35 +673,6 @@ public class MainActivity extends AppCompatActivity
         updateMonth = String.valueOf(nowMonth);
         updateDate = String.valueOf(nowDate);
         todayPosition = nowDate;
-    }
-
-    //廢物
-    private void backFormUpdate(Bundle bundle) {
-        if(bundle.getBoolean("update")){
-            isUpdate = false;
-
-            callbackYear = bundle.getInt("callbackYear");
-            callbackMonth = bundle.getInt("callbackMonth");
-            callbackDate = bundle.getInt("callbackDate");
-            int intUpdateYear = Integer.valueOf(updateYear);
-            int intUpdateMonth = Integer.valueOf(updateMonth);
-            int intUpdateDate = Integer.valueOf(updateDate);
-            lvMainInfo = (ListView) findViewById(R.id.lvMainInfo);
-            Log.d("callbackYear", String.valueOf(callbackYear));
-            Log.d("callbackMonth", String.valueOf(callbackMonth));
-            if(callbackYear == intUpdateYear && callbackMonth == intUpdateMonth && callbackDate != intUpdateDate){
-                isUpdate = true;
-            }
-//            else if (callbackYear == intUpdateYear && callbackMonth != intUpdateMonth) {
-//                Log.d("UPDATETRUE", "GOT rrrrrrr");
-//                for(int i=intUpdateMonth; i>=callbackMonth; i--){
-//                    Log.d("callbackYear", String.valueOf(callbackYear));
-//                    Log.d("intUpdateMonth", String.valueOf(i));
-//                    getMainInfoData(String.valueOf(callbackYear), String.valueOf(i));
-//
-//                }
-//            }
-        }
     }
 
     //設定登出動作

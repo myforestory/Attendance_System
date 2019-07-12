@@ -81,4 +81,27 @@ public class DateUtils {
         }
         return reStrArray;
     }
+
+    public static String plusOneDay(String dateAndTime, String hourAndMin){
+        String todayAsString = dateAndTime;
+        try {
+            SimpleDateFormat hourAndMinFormat = new SimpleDateFormat("HH:mm:ss");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date zero = hourAndMinFormat.parse("00:00:00");
+            Date six = hourAndMinFormat.parse("06:00:00");
+            Date userTime = hourAndMinFormat.parse(hourAndMin);
+            Date userDate = dateFormat.parse(dateAndTime);
+            Date plusOneDay = new Date();
+            if (userTime.compareTo(zero) == 0 || ( userTime.after(zero) && userTime.before(six))) {
+                Calendar c = Calendar.getInstance();
+                c.setTime(userDate);
+                c.add(Calendar.DATE, 1);
+                plusOneDay = c.getTime();
+                todayAsString = dateFormat.format(plusOneDay);
+            }
+        } catch (ParseException e) {
+            // Invalid date was entered
+        }
+        return todayAsString;
+    }
 }
