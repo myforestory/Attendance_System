@@ -541,8 +541,6 @@ public class MainActivity extends AppCompatActivity
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            HashMap<String, Object> afterUpdateMap = new HashMap<String, Object>();
-                                            afterUpdateMap.put("start", modifyData);
                                             updateView(todayPosition, modifyData, R.id.tvStart);
                                             jumpSelectionFromTop(todayPosition);
                                             MainInfo mainInfoItem = mainInfoList.get(todayPosition);
@@ -579,16 +577,19 @@ public class MainActivity extends AppCompatActivity
                                 try {
                                     JSONObject jsonObject = new JSONObject(responseBody);
                                     Log.d("responseBody", responseBody);
-                                    final String modifyData = jsonObject.getJSONObject("data").getJSONObject("updated").getString("end").split("\\s+")[1];
+                                    final String modifyDataEnd = jsonObject.getJSONObject("data").getJSONObject("updated").getString("end").split("\\s+")[1];
+                                    final String modifyDataHours = jsonObject.getJSONObject("data").getJSONObject("updated").getString("working_hours");
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            HashMap<String, Object> afterUpdateMap = new HashMap<String, Object>();
-                                            afterUpdateMap.put("end", modifyData);
-                                            updateView(todayPosition, modifyData, R.id.tvEnd);
+                                            updateView(todayPosition, modifyDataEnd, R.id.tvEnd);
                                             jumpSelectionFromTop(todayPosition);
                                             MainInfo mainInfoItem = mainInfoList.get(todayPosition);
-                                            mainInfoItem.setEnd(modifyData);
+                                            mainInfoItem.setEnd(modifyDataEnd);
+                                            if(!"".equals(modifyDataHours)){
+                                                updateView(todayPosition, modifyDataHours, R.id.tvWorked_time);
+                                                mainInfoItem.setWorked_time(modifyDataHours);
+                                            }
                                         }
                                     });
                                 } catch (JSONException e) {}
@@ -783,15 +784,19 @@ public class MainActivity extends AppCompatActivity
             String start = data.getStringExtra("start");
             String end = data.getStringExtra("end");
             String remarks = data.getStringExtra("remarks");
+            String working_hours = data.getStringExtra("working_hours");
             int position = data.getIntExtra("position", 0);
             MainInfo mainInfoItem = mainInfoList.get(position);
 
             updateView(position, start, R.id.tvStart);
             updateView(position, end, R.id.tvEnd);
             updateView(position, remarks, R.id.tvRemarks);
+            updateView(position, working_hours, R.id.tvWorked_time);
+
             mainInfoItem.setStart(start);
             mainInfoItem.setEnd(end);
             mainInfoItem.setRemarks(remarks);
+            mainInfoItem.setWorked_time(working_hours);
 
             jumpSelectionFromTop(position);
         }

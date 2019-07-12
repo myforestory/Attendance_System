@@ -366,6 +366,7 @@ public class UpdateActivity extends AppCompatActivity {
                         start = start.substring(0, start.length()-3);
                         end = end.substring(0, end.length()-3);
                         String remarks = jsonObject.getJSONObject("data").getJSONObject("updated").getString("remarks");
+                        String working_hours = jsonObject.getJSONObject("data").getJSONObject("updated").getString("working_hours");
 
                         Intent intent = new Intent(UpdateActivity.this, MainActivity.class);
                         Bundle bundle = new Bundle();
@@ -381,9 +382,7 @@ public class UpdateActivity extends AppCompatActivity {
                         bundle.putString("start", start);
                         bundle.putString("end", end);
                         bundle.putString("remarks", remarks);
-
-
-
+                        bundle.putString("working_hours", working_hours);
 
                         intent.putExtras(bundle);
 
