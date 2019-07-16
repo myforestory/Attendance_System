@@ -351,14 +351,15 @@ public class MainActivity extends AppCompatActivity
         lvMainInfo.setOnScrollListener(onListScroll);
         laySwipe = (SwipeRefreshLayout) findViewById(R.id.laySwipe);
         laySwipe.setOnRefreshListener(onSwipeToRefresh);
-        laySwipe.setColorSchemeResources(
-        android.R.color.holo_red_light,
-        android.R.color.holo_blue_light,
-        android.R.color.holo_green_light,
-        android.R.color.holo_orange_light);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                laySwipe.setColorSchemeResources(
+                android.R.color.holo_red_light,
+                android.R.color.holo_blue_light,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light);
+
                 mainInfoAdapter = new MainInfoAdapter(getApplicationContext(), mainInfoList);
                 lvMainInfo.setAdapter(mainInfoAdapter);
                 if(isInitial) {
@@ -645,13 +646,18 @@ public class MainActivity extends AppCompatActivity
     //讓出勤按鈕重置
     private void checkTodayTime() {
         try {
-            Date finalDate, reloadDate, todayDateFormat;
+            Date finalDate, reloadDate, todayDateFormat, startAllowedFormat, nowTimeFormat;
 
             finalUpdateTime = getSharedPreferences("status", MODE_PRIVATE).getString("finalUpdateTime", "");
             SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat sdFormat1 = new SimpleDateFormat("HH:mm");
+            Date nowDate = new Date();
             finalDate = sdFormat.parse(finalUpdateTime);
             todayDateFormat = sdFormat.parse(todayYMD);
+            startAllowedFormat = sdFormat1.parse("06:00");
+            nowTimeFormat = nowDate;
             Calendar c = Calendar.getInstance();
+            c.getTime();
             c.setTime(finalDate);
             c.add(Calendar.DATE, 1);
             reloadDate = c.getTime();
@@ -659,11 +665,7 @@ public class MainActivity extends AppCompatActivity
             Log.d("reloadDate", reloadDate.toString());
             Log.d("nowDate", todayDateFormat.toString());
 
-            Date nowDate = new Date();
-            LocalTime startAllowed = LocalTime.of(6, 00);
-            LocalTime currentTime = LocalTime.now();
-
-            if (todayDateFormat.after(reloadDate) && currentTime.isAfter(startAllowed)) {
+            if (todayDateFormat.after(reloadDate) && nowDate.after(startAllowedFormat)) {
                 status.edit().putInt("statusCode", 1).commit();
             }
         } catch (ParseException e) {

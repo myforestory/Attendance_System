@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -400,25 +402,19 @@ public class UpdateActivity extends AppCompatActivity {
         Boolean isLegal = false;
         String returnCode = "";
         try {
+            Message msg = new Message();
+            msg.what = 1 ;
             returnCode = jsonObject.getString("code");
             if ("E00002".equals(returnCode)) {
                 logout();
-                final String errorMsg = "重複するアカウントをログインする";
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(UpdateActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
-                    }
-                });
+                String errorMsg = "重複するアカウントをログインする";
+                msg.obj = errorMsg;
+                handler.sendMessage(msg);
                 isLegal = false;
             } else if (!returnCode.isEmpty() ) {
-                final String errorMsg = jsonObject.getString("message");;
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(UpdateActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
-                    }
-                });
+                String errorMsg = jsonObject.getString("message");
+                msg.obj = errorMsg;
+                handler.sendMessage(msg);
                 isLegal = false;
             } else {
                 isLegal = true;
@@ -452,6 +448,18 @@ public class UpdateActivity extends AppCompatActivity {
         intent.putExtras(bundle);
         startActivity(intent);
     }
+
+    //Error Handler
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if(msg.what == 1) {
+                String showMsg = msg.obj.toString();
+                Toast.makeText(UpdateActivity.this, showMsg, Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
 
 
 }
