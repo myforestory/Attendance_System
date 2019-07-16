@@ -202,7 +202,7 @@ public class MainActivity extends AppCompatActivity
 //        nowDate = c.get(Calendar.DATE);
         /////////// test ////////////
         nowYear = 2019;
-        nowMonth = 6;
+        nowMonth = 06;
         nowDate = 10;
         /////////// test ////////////
         updateYear = String.valueOf(nowYear);
@@ -210,7 +210,7 @@ public class MainActivity extends AppCompatActivity
         updateDate = String.valueOf(nowDate);
         todayYMD = nowYear + "-" + nowMonth + "-" + nowDate;
         todayPosition = nowDate;
-        getMainInfoData(String.valueOf(nowYear), String.valueOf(nowMonth));
+        getMainInfoData(String.valueOf(nowYear), "0" + String.valueOf(nowMonth));
     }
 
     //向api請求資料 製作mainInfoList SECTION:懸浮表頭 ITEM:一筆筆資料
@@ -537,16 +537,18 @@ public class MainActivity extends AppCompatActivity
                                 Log.d("responseBody", responseBody);
                                 try {
                                     JSONObject jsonObject = new JSONObject(responseBody);
-                                    final String modifyData = jsonObject.getJSONObject("data").getJSONObject("updated").getString("start").split("\\s+")[1];
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            updateView(todayPosition, modifyData, R.id.tvStart);
-                                            jumpSelectionFromTop(todayPosition);
-                                            MainInfo mainInfoItem = mainInfoList.get(todayPosition);
-                                            mainInfoItem.setStart(modifyData);
-                                        }
-                                    });
+                                    if (isDuplicateLogin(jsonObject)) {
+                                        final String modifyData = jsonObject.getJSONObject("data").getJSONObject("updated").getString("start").split("\\s+")[1];
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                updateView(todayPosition, modifyData, R.id.tvStart);
+                                                jumpSelectionFromTop(todayPosition);
+                                                MainInfo mainInfoItem = mainInfoList.get(todayPosition);
+                                                mainInfoItem.setStart(modifyData);
+                                            }
+                                        });
+                                    }
                                 } catch (JSONException e) {}
                             }
                         }, updateMap, "Authorization", loginToken);
@@ -577,21 +579,23 @@ public class MainActivity extends AppCompatActivity
                                 try {
                                     JSONObject jsonObject = new JSONObject(responseBody);
                                     Log.d("responseBody", responseBody);
-                                    final String modifyDataEnd = jsonObject.getJSONObject("data").getJSONObject("updated").getString("end").split("\\s+")[1];
-                                    final String modifyDataHours = jsonObject.getJSONObject("data").getJSONObject("updated").getString("working_hours");
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            updateView(todayPosition, modifyDataEnd, R.id.tvEnd);
-                                            jumpSelectionFromTop(todayPosition);
-                                            MainInfo mainInfoItem = mainInfoList.get(todayPosition);
-                                            mainInfoItem.setEnd(modifyDataEnd);
-                                            if(!"".equals(modifyDataHours)){
-                                                updateView(todayPosition, modifyDataHours, R.id.tvWorked_time);
-                                                mainInfoItem.setWorked_time(modifyDataHours);
+                                    if (isDuplicateLogin(jsonObject)){
+                                        final String modifyDataEnd = jsonObject.getJSONObject("data").getJSONObject("updated").getString("end").split("\\s+")[1];
+                                        final String modifyDataHours = jsonObject.getJSONObject("data").getJSONObject("updated").getString("working_hours");
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                updateView(todayPosition, modifyDataEnd, R.id.tvEnd);
+                                                jumpSelectionFromTop(todayPosition);
+                                                MainInfo mainInfoItem = mainInfoList.get(todayPosition);
+                                                mainInfoItem.setEnd(modifyDataEnd);
+                                                if(!"".equals(modifyDataHours)){
+                                                    updateView(todayPosition, modifyDataHours, R.id.tvWorked_time);
+                                                    mainInfoItem.setWorked_time(modifyDataHours);
+                                                }
                                             }
-                                        }
-                                    });
+                                        });
+                                    }
                                 } catch (JSONException e) {}
                             }
                         }, updateMap, "Authorization", loginToken);
