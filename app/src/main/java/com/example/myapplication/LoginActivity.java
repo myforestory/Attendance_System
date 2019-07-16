@@ -3,6 +3,8 @@ package com.example.myapplication;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -118,26 +120,25 @@ public class LoginActivity extends AppCompatActivity {
     private Boolean isLegal (String userName, String password) {
         Boolean isLegal = true;
         if (userName.isEmpty() || password.isEmpty()) {
-            Toast.makeText(LoginActivity.this, "入力してください。", Toast.LENGTH_SHORT).show();
+            Message msg = new Message();
+            msg.what = 2;
+            handler.sendMessage(msg);
             isLegal = false;
         }
         return isLegal;
     }
 
-
     private Boolean isLegal (JSONObject jsonObject) {
         Boolean isLegal = false;
         String returnCode = "";
         try {
+            Message msg = new Message();
+            msg.what = 1 ;
             returnCode = jsonObject.getString("code");
             if (!returnCode.isEmpty()) {
                 final String errorMsg = jsonObject.getString("message");;
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(LoginActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
-                    }
-                });
+                msg.obj = errorMsg;
+                handler.sendMessage(msg);
                 isLegal = false;
             } else {
                 isLegal = true;
@@ -147,4 +148,20 @@ public class LoginActivity extends AppCompatActivity {
         }
         return isLegal;
     }
+
+    //Error Handler
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if(msg.what == 1) {
+                String showMsg = msg.obj.toString();
+                Toast.makeText(LoginActivity.this, showMsg, Toast.LENGTH_SHORT).show();
+            }
+            if(msg.what == 2) {
+                String showMsg = msg.obj.toString();
+                Toast.makeText(LoginActivity.this, "入力してください。", Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
 }
