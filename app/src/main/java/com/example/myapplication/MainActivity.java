@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity
     String loginToken, userId, getDataUrl, name, email, finalUpdateTime, updateUrl;
     String updateYear, updateMonth, updateDate, todayYMD;
     SharedPreferences logoutKey, status;
-    int nowYear, nowMonth, nowDate, statusCode, todayPosition, updatePosition, callbackYear, callbackMonth, callbackDate, callPosition;
+    int nowYear, nowMonth, nowDate, statusCode, todayPosition, updatePosition, callbackDate, callPosition;
     Boolean isInitial, isUpdate;
 
     @Override
@@ -239,7 +239,7 @@ public class MainActivity extends AppCompatActivity
                     try {
                         Log.d("responseBody", responseBody);
                         JSONObject jsonObject = new JSONObject(responseBody);
-                        if(isDuplicateLogin(jsonObject)) {
+                        if(isLegal(jsonObject)) {
 
                             final String startStatus = jsonObject.getJSONObject("data").getJSONObject("today").getString("start");
                             final String endStatus = jsonObject.getJSONObject("data").getJSONObject("today").getString("end");
@@ -346,21 +346,22 @@ public class MainActivity extends AppCompatActivity
 
     //取得mainInfoList 後再對ListView 進行初始化並加入adapter
     //設定下滑加載動作，設定每次加載完成後的跳至指定item
-    public void findViews(final ArrayList <MainInfo>mainInfoList) {
+    public void findViews(final ArrayList <MainInfo>mainInfoList3) {
         lvMainInfo = (ListView) findViewById(R.id.lvMainInfo);
         lvMainInfo.setOnScrollListener(onListScroll);
         laySwipe = (SwipeRefreshLayout) findViewById(R.id.laySwipe);
-        laySwipe.setOnRefreshListener(onSwipeToRefresh);
+
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                laySwipe.setOnRefreshListener(onSwipeToRefresh);
                 laySwipe.setColorSchemeResources(
                 android.R.color.holo_red_light,
                 android.R.color.holo_blue_light,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light);
 
-                mainInfoAdapter = new MainInfoAdapter(getApplicationContext(), mainInfoList);
+                mainInfoAdapter = new MainInfoAdapter(getApplicationContext(), mainInfoList3);
                 lvMainInfo.setAdapter(mainInfoAdapter);
                 if(isInitial) {
                     jumpSelectionFromTop(todayPosition);
@@ -538,7 +539,7 @@ public class MainActivity extends AppCompatActivity
                                 Log.d("responseBody", responseBody);
                                 try {
                                     JSONObject jsonObject = new JSONObject(responseBody);
-                                    if (isDuplicateLogin(jsonObject)) {
+                                    if (isLegal(jsonObject)) {
                                         final String modifyData = jsonObject.getJSONObject("data").getJSONObject("updated").getString("start").split("\\s+")[1];
                                         runOnUiThread(new Runnable() {
                                             @Override
@@ -580,7 +581,7 @@ public class MainActivity extends AppCompatActivity
                                 try {
                                     JSONObject jsonObject = new JSONObject(responseBody);
                                     Log.d("responseBody", responseBody);
-                                    if (isDuplicateLogin(jsonObject)){
+                                    if (isLegal(jsonObject)){
                                         final String modifyDataEnd = jsonObject.getJSONObject("data").getJSONObject("updated").getString("end").split("\\s+")[1];
                                         final String modifyDataHours = jsonObject.getJSONObject("data").getJSONObject("updated").getString("working_hours");
                                         runOnUiThread(new Runnable() {
@@ -620,6 +621,7 @@ public class MainActivity extends AppCompatActivity
         txTitleDate = (TextView) findViewById(R.id.txTitleDate);
         txTitleTime = (TextView) findViewById(R.id.txTitleTime);
         statusCode = getSharedPreferences("status", MODE_PRIVATE).getInt("statusCode", 0);
+        Log.d("", "");
         switch (statusCode) {
             case 1:
                 btUpdate.setVisibility (View.VISIBLE);
@@ -643,34 +645,35 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    //讓出勤按鈕重置
+    //出勤按鈕重置
     private void checkTodayTime() {
-        try {
-            Date finalDate, reloadDate, todayDateFormat, startAllowedFormat, nowTimeFormat;
-
-            finalUpdateTime = getSharedPreferences("status", MODE_PRIVATE).getString("finalUpdateTime", "");
-            SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd");
-            SimpleDateFormat sdFormat1 = new SimpleDateFormat("HH:mm");
-            Date nowDate = new Date();
-            finalDate = sdFormat.parse(finalUpdateTime);
-            todayDateFormat = sdFormat.parse(todayYMD);
-            startAllowedFormat = sdFormat1.parse("06:00");
-            nowTimeFormat = nowDate;
-            Calendar c = Calendar.getInstance();
-            c.getTime();
-            c.setTime(finalDate);
-            c.add(Calendar.DATE, 1);
-            reloadDate = c.getTime();
-            Log.d("finalUpdateTime", finalUpdateTime);
-            Log.d("reloadDate", reloadDate.toString());
-            Log.d("nowDate", todayDateFormat.toString());
-
-            if (todayDateFormat.after(reloadDate) && nowDate.after(startAllowedFormat)) {
-                status.edit().putInt("statusCode", 1).commit();
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Date nowDate = new Date();
+//            Date finalDate, reloadDate, todayDateFormat, startAllowedFormat, nowTimeFormat;
+//
+//            finalUpdateTime = getSharedPreferences("status", MODE_PRIVATE).getString("finalUpdateTime", "");
+//            SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd");
+//            SimpleDateFormat sdFormat1 = new SimpleDateFormat("HH:mm");
+//            Log.d("finalUpdateTime", finalUpdateTime);
+//            finalDate = sdFormat.parse(finalUpdateTime);
+//            todayDateFormat = sdFormat.parse(todayYMD);
+//            startAllowedFormat = sdFormat1.parse("06:00");
+//            nowTimeFormat = nowDate;
+//            Calendar c = Calendar.getInstance();
+//            c.getTime();
+//            c.setTime(finalDate);
+//            c.add(Calendar.DATE, 1);
+//            reloadDate = c.getTime();
+//            Log.d("finalUpdateTime", finalUpdateTime);
+//            Log.d("reloadDate", reloadDate.toString());
+//            Log.d("nowDate", todayDateFormat.toString());
+//
+//            if (todayDateFormat.after(reloadDate) && nowDate.after(startAllowedFormat)) {
+//                status.edit().putInt("statusCode", 1).commit();
+//            }
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
     }
 
     //感覺 滑起來比較順 笑
@@ -710,9 +713,7 @@ public class MainActivity extends AppCompatActivity
 
         OkHttpGetPost.postAsycHttp(logoutUrl, new Callback() {
             @Override
-            public void onFailure(Call call, IOException e) {
-
-            }
+            public void onFailure(Call call, IOException e) {}
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
@@ -728,13 +729,12 @@ public class MainActivity extends AppCompatActivity
         startActivity(intent);
     }
 
-    //檢查是否重複登入
-    public Boolean isDuplicateLogin(JSONObject jsonObject){
-        Boolean isDuplicate = false;
+    private Boolean isLegal (JSONObject jsonObject) {
+        Boolean isLegal = false;
         String returnCode = "";
         try {
             returnCode = jsonObject.getString("code");
-            if (!returnCode.isEmpty()) {
+            if ("E00002".equals(returnCode)) {
                 logout();
                 final String errorMsg = "重複するアカウントをログインする";
                 runOnUiThread(new Runnable() {
@@ -743,12 +743,22 @@ public class MainActivity extends AppCompatActivity
                         Toast.makeText(MainActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
                     }
                 });
-                isDuplicate = false;
+                isLegal = false;
+            } else if (!returnCode.isEmpty() ) {
+                final String errorMsg = jsonObject.getString("message");;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MainActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
+                    }
+                });
+                isLegal = false;
             } else {
-                isDuplicate = true;
+                isLegal = true;
             }
-        } catch (JSONException e) { }
-        return isDuplicate;
+        } catch (JSONException e) {
+        }
+        return isLegal;
     }
 
     //修改List上個別資料

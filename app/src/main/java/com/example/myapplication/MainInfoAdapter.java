@@ -119,7 +119,6 @@ public class MainInfoAdapter extends BaseAdapter implements PinnedSectionListVie
                 paramTvDate.setMargins((int)context.getResources().getDimension(R.dimen.dp_5),0,0,0);
                 holder.tvDate.setLayoutParams(paramTvDate);
             }
-            Log.d("width", String.valueOf(width));
             holder.tvDay.setText(maininfo.getDay());
             if ("土".equals(maininfo.getDay()) || "日".equals(maininfo.getDay()) || "休".equals(maininfo.getDay())) {
                 convertView.setBackgroundColor(context.getResources().getColor(R.color.colorMainLightGrey));

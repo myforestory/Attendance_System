@@ -402,19 +402,25 @@ public class UpdateActivity extends AppCompatActivity {
         Boolean isLegal = false;
         String returnCode = "";
         try {
-            Message msg = new Message();
-            msg.what = 1 ;
             returnCode = jsonObject.getString("code");
             if ("E00002".equals(returnCode)) {
                 logout();
-                String errorMsg = "重複するアカウントをログインする";
-                msg.obj = errorMsg;
-                handler.sendMessage(msg);
+                final String errorMsg = "重複するアカウントをログインする";
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(UpdateActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
+                    }
+                });
                 isLegal = false;
             } else if (!returnCode.isEmpty() ) {
-                String errorMsg = jsonObject.getString("message");
-                msg.obj = errorMsg;
-                handler.sendMessage(msg);
+                final String errorMsg = jsonObject.getString("message");;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(UpdateActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
+                    }
+                });
                 isLegal = false;
             } else {
                 isLegal = true;
@@ -448,16 +454,4 @@ public class UpdateActivity extends AppCompatActivity {
         intent.putExtras(bundle);
         startActivity(intent);
     }
-
-    //Error Handler
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if(msg.what == 1) {
-                String showMsg = msg.obj.toString();
-                Toast.makeText(UpdateActivity.this, showMsg, Toast.LENGTH_SHORT).show();
-            }
-        }
-    };
 }
