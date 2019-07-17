@@ -134,9 +134,12 @@ public class MainInfoAdapter extends BaseAdapter implements PinnedSectionListVie
             holder.tvRemarks.setText(maininfo.getRemarks());
             if(width < 500) {
                 holder.tvRemarks.getLayoutParams().width = (int)context.getResources().getDimension(R.dimen.dp_180);
-            } else if (width > 1200) {
+            } else if (width >= 1300) {
                 holder.tvRemarks.getLayoutParams().width = (int)context.getResources().getDimension(R.dimen.dp_220);
+            } else if (width < 1300 && width > 1100) {
+                holder.tvRemarks.getLayoutParams().width = (int)context.getResources().getDimension(R.dimen.dp_320);
             }
+            Log.d("width", String.valueOf(width));
 
             holder.imgStr.setBackgroundResource(R.drawable.ic_play);
             holder.imgEnd.setBackgroundResource(R.drawable.ic_power_setting);

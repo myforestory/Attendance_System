@@ -125,8 +125,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -137,13 +135,13 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.back_home) {
-            /////////// test ////////////
+            ///////////test////////////
             btUpdate = findViewById(R.id.btUpdate);
             status.edit()
                     .putInt("statusCode", 1)
                     .commit();
             setBtUpdateStyle();
-            /////////// test ////////////
+            ///////////test////////////
 
         } else if (id == R.id.log_out) {
             logout();
@@ -197,14 +195,14 @@ public class MainActivity extends AppCompatActivity
         String dataTime;
 
         Calendar c = Calendar.getInstance();
-//        nowYear = c.get(Calendar.YEAR);
-//        nowMonth = c.get(Calendar.MONTH)+1;
-//        nowDate = c.get(Calendar.DATE);
-        /////////// test ////////////
-        nowYear = 2019;
-        nowMonth = 06;
-        nowDate = 10;
-        /////////// test ////////////
+        nowYear = c.get(Calendar.YEAR);
+        nowMonth = c.get(Calendar.MONTH)+1;
+        nowDate = c.get(Calendar.DATE);
+        ///////////test////////////
+//        nowYear = 2019;
+//        nowMonth = 07;
+//        nowDate = 17;
+        ///////////test////////////
         updateYear = String.valueOf(nowYear);
         updateMonth = String.valueOf(nowMonth);
         updateDate = String.valueOf(nowDate);
@@ -226,9 +224,14 @@ public class MainActivity extends AppCompatActivity
         if(!loginToken.isEmpty() && !userId.isEmpty()) {
             OkHttpGetPost.getAsycHttp(getDataUrl, new Callback() {
                 @Override
-                public void onFailure(Call call, IOException e) {
-                    Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
-                    Log.d("onFailure",  e.toString());
+                public void onFailure(Call call, final IOException e) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                            Log.d("onFailure",  e.toString());
+                        }
+                    });
                 }
 
                 @Override
@@ -347,6 +350,7 @@ public class MainActivity extends AppCompatActivity
     //取得mainInfoList 後再對ListView 進行初始化並加入adapter
     //設定下滑加載動作，設定每次加載完成後的跳至指定item
     public void findViews(final ArrayList <MainInfo>mainInfoList3) {
+
         lvMainInfo = (ListView) findViewById(R.id.lvMainInfo);
         lvMainInfo.setOnScrollListener(onListScroll);
         laySwipe = (SwipeRefreshLayout) findViewById(R.id.laySwipe);
@@ -355,6 +359,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void run() {
                 laySwipe.setOnRefreshListener(onSwipeToRefresh);
+                laySwipe.setRefreshing(false);
                 laySwipe.setColorSchemeResources(
                 android.R.color.holo_red_light,
                 android.R.color.holo_blue_light,

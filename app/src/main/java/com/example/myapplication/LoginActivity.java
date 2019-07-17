@@ -51,9 +51,12 @@ public class LoginActivity extends AppCompatActivity {
         HashMap<String, String> accountMap = new HashMap<String, String>();
         etUserName = (EditText) findViewById(R.id.etUserName);
         etPassword = (EditText) findViewById(R.id.etPassword);
-
-        etUserName.setText("chen@marcopolos.co.jp");
-        etPassword.setText("test123456");
+        if ("".equals(etUserName.getText().toString())) {
+            ///////test/////////
+            etUserName.setText("chen@marcopolos.co.jp");
+            etPassword.setText("test123456");
+            ///////test/////////
+        }
 
         final String userName = etUserName.getText().toString();
         final String password = etPassword.getText().toString();

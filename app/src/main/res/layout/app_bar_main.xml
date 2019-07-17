@@ -57,7 +57,8 @@
                     android:gravity="center"
                     android:text="出勤"
                     android:textColor="@color/colorMainWhite"
-                    android:textSize="@dimen/dp_18" />
+                    android:textSize="@dimen/dp_18"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/txTitleTime"
