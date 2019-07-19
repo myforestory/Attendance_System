@@ -4,6 +4,7 @@ import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -103,5 +104,20 @@ public class DateUtils {
             // Invalid date was entered
         }
         return todayAsString;
+    }
+
+    public static Boolean isAfterTime(String getTime, String compareTime) {
+        Boolean isAfter = false;
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        try {
+            Date getTimeFormat = sdf.parse(getTime);
+            Date compareTimeFormat = sdf.parse(compareTime);
+            if (getTimeFormat.compareTo(compareTimeFormat) > 0) {
+                isAfter = true;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return isAfter;
     }
 }

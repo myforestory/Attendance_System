@@ -1,6 +1,8 @@
 package com.example.myapplication;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -90,6 +92,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent = new Intent(this, LongRunningService.class);
+        startService(intent);
         bundle = this.getIntent().getExtras();
         name = bundle.getString("name");
         email = bundle.getString("email");
@@ -104,6 +108,7 @@ public class MainActivity extends AppCompatActivity
         drawerAction();
         setInitialMainInfo();
         updateTitleTime();
+
     }
 
     //drawer 收回
@@ -195,13 +200,13 @@ public class MainActivity extends AppCompatActivity
         String dataTime;
 
         Calendar c = Calendar.getInstance();
-        nowYear = c.get(Calendar.YEAR);
-        nowMonth = c.get(Calendar.MONTH)+1;
-        nowDate = c.get(Calendar.DATE);
+//        nowYear = c.get(Calendar.YEAR);
+//        nowMonth = c.get(Calendar.MONTH)+1;
+//        nowDate = c.get(Calendar.DATE);
         ///////////test////////////
-//        nowYear = 2019;
-//        nowMonth = 07;
-//        nowDate = 17;
+        nowYear = 2019;
+        nowMonth = 07;
+        nowDate = 20;
         ///////////test////////////
         updateYear = String.valueOf(nowYear);
         updateMonth = String.valueOf(nowMonth);
@@ -486,8 +491,9 @@ public class MainActivity extends AppCompatActivity
     private void todayButtonStatus(String startStatus, String endStatus){
         if("".equals(startStatus)){
             status.edit().putInt("statusCode", 1).commit();
-        } else if ("".equals(endStatus)) {
+        } else if (!"".equals(startStatus) && "".equals(endStatus)) {
             status.edit().putInt("statusCode", 2).commit();
+            updateView(todayPosition, "勤務中", R.id.tvEnd);
         } else {
             status.edit().putInt("statusCode", 3).commit();
         }
@@ -821,5 +827,9 @@ public class MainActivity extends AppCompatActivity
 
             jumpSelectionFromTop(position);
         }
+    }
+
+    private void onWorkingText() {
+
     }
 }

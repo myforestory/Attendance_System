@@ -127,6 +127,11 @@ public class MainInfoAdapter extends BaseAdapter implements PinnedSectionListVie
                 convertView.setBackgroundColor(context.getResources().getColor(R.color.colorMainWhite));
             }
             holder.tvStart.setText(maininfo.getStart());
+            if (!"".equals(maininfo.getStart()) && DateUtils.isAfterTime(maininfo.getStart(), "10:00")) {
+                holder.tvStart.setTextColor(context.getResources().getColor(R.color.colorMainRed));
+            } else {
+                holder.tvStart.setTextColor(context.getResources().getColor(R.color.colorMainBlack));
+            }
             holder.tvEnd.setText(maininfo.getEnd());
             holder.tvWorked_time.setText(maininfo.getWorked_time()+"H");
             if(width < 500) {

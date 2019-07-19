@@ -32,6 +32,11 @@
             android:name=".UpdateActivity"
             android:label="@string/act_update"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
+        <service android:name=".LongRunningService" >
+        </service>
+
+        <receiver android:name=".AlarmReceiver" >
+        </receiver>
     </application>
 
 </manifest>
