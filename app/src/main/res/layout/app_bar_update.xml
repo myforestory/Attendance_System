@@ -35,7 +35,7 @@
                 <TextView
                     android:id="@+id/tvUpdateTitle"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/dp_36"
                     android:gravity="center"
                     android:text="2019年6月7日(金)"
                     android:textColor="@color/colorMainWhite"
@@ -44,23 +44,24 @@
 
                 <ImageView
                     android:id="@+id/ivBackToMain"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
+                    android:layout_width="@dimen/dp_32"
+                    android:layout_height="@dimen/dp_32"
                     android:layout_alignLeft="@+id/tvUpdateTitle"
                     android:layout_marginRight="@dimen/dp_50"
                     android:clickable="true"
-                    app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
+                    android:layout_alignBottom="@id/tvUpdateTitle"
+                    app:srcCompat="@drawable/ic_close" />
 
                 <ImageView
                     android:id="@+id/ivSave"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
+                    android:layout_width="@dimen/dp_32"
+                    android:layout_height="@dimen/dp_32"
                     android:layout_alignRight="@+id/tvUpdateTitle"
                     android:layout_marginRight="@dimen/dp_6"
                     android:clickable="true"
-                    app:srcCompat="@android:drawable/ic_menu_save" />
+                    android:padding="0dp"
+                    android:layout_alignBottom="@id/tvUpdateTitle"
+                    app:srcCompat="@drawable/ic_save" />
 
             </RelativeLayout>
 

@@ -17,7 +17,10 @@
         android:inputType="textPersonName"
         android:hint="@string/update_hint_etStrTime"
         android:focusable="false"
-        android:drawableStart="@drawable/ic_play"
+        android:drawableStart="@drawable/ic_played"
+        android:drawablePadding="@dimen/dp_10"
+        android:paddingLeft="@dimen/dp_12"
+        android:paddingRight="@dimen/dp_12"
         android:text="" />
 
     <EditText
@@ -31,6 +34,9 @@
         android:hint="@string/update_hint_etStrTime"
         android:focusable="false"
         android:drawableStart="@drawable/ic_power_setting"
+        android:drawablePadding="@dimen/dp_10"
+        android:paddingLeft="@dimen/dp_12"
+        android:paddingRight="@dimen/dp_12"
         android:text="" />
 
     <EditText
@@ -42,6 +48,8 @@
         android:textSize="@dimen/dp_12"
         android:ems="10"
         android:inputType="textMultiLine"
+        android:paddingLeft="@dimen/dp_12"
+        android:paddingRight="@dimen/dp_12"
         android:hint="@string/update_hint_etDescription_update"
         android:text="" />
 

@@ -104,14 +104,15 @@ public class MainInfoAdapter extends BaseAdapter implements PinnedSectionListVie
             if ("1".equals(maininfo.getDate())){
             }
             if (maininfo.getDate().length() == 2) {
-                holder.tvDate.setTextSize(TypedValue.COMPLEX_UNIT_PX,(int)context.getResources().getDimension(R.dimen.dp_32));
+                holder.tvDate.setTextSize(TypedValue.COMPLEX_UNIT_PX,(int)context.getResources().getDimension(R.dimen.dp_24));
             } else {
-                holder.tvDate.setTextSize(TypedValue.COMPLEX_UNIT_PX, (int)context.getResources().getDimension(R.dimen.dp_40));
+                holder.tvDate.setTextSize(TypedValue.COMPLEX_UNIT_PX, (int)context.getResources().getDimension(R.dimen.dp_30));
             }
             WindowManager winMan = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
             Display display = winMan.getDefaultDisplay();
             Point size = new Point();
             display.getSize(size);
+
             int width = size.x;
             int height = size.y;
             if(width < 500) {
@@ -127,7 +128,7 @@ public class MainInfoAdapter extends BaseAdapter implements PinnedSectionListVie
             }
             holder.tvStart.setText(maininfo.getStart());
             holder.tvEnd.setText(maininfo.getEnd());
-            holder.tvWorked_time.setText(maininfo.getWorked_time());
+            holder.tvWorked_time.setText(maininfo.getWorked_time()+"H");
             if(width < 500) {
                 holder.tvWorked_time.setTextSize(TypedValue.COMPLEX_UNIT_PX,(int)context.getResources().getDimension(R.dimen.dp_18));
             }
@@ -139,10 +140,15 @@ public class MainInfoAdapter extends BaseAdapter implements PinnedSectionListVie
             } else if (width < 1300 && width > 1100) {
                 holder.tvRemarks.getLayoutParams().width = (int)context.getResources().getDimension(R.dimen.dp_320);
             }
-            Log.d("width", String.valueOf(width));
-
-            holder.imgStr.setBackgroundResource(R.drawable.ic_play);
-            holder.imgEnd.setBackgroundResource(R.drawable.ic_power_setting);
+            if(!"".equals(maininfo.getStart()) && !"".equals(maininfo.getEnd())) {
+                holder.imgStr.setBackgroundResource(R.drawable.ic_played);
+                holder.imgEnd.setBackgroundResource(R.drawable.ic_power_setting);
+            } else {
+                holder.imgStr.setBackgroundResource(0);
+                holder.imgEnd.setBackgroundResource(0);
+                holder.tvWorked_time.setText("");
+            }
+            //Log.d("width", String.valueOf(width));
         } else {
             if (convertView == null) {
                 holder = new ViewHolder();

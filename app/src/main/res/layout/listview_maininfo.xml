@@ -1,7 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="@dimen/dp_70"
     android:orientation="horizontal"
     android:id="@+id/listview_maininfo">
 
@@ -15,7 +15,7 @@
 
     <TextView
         android:id="@+id/tvDate"
-        android:layout_width="@dimen/dp_42"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_12"
         android:gravity="center"
@@ -32,7 +32,7 @@
         android:layout_alignBaseline="@id/tvDate"
         android:layout_toEndOf="@+id/tvDate"
         android:text="土"
-        android:textColor="@color/colorMainBlack"
+        android:textColor="@color/colorMainGrey"
         android:textSize="@dimen/dp_16" />
 
     <ImageView
@@ -42,7 +42,7 @@
         android:layout_alignLeft="@id/tvRemarks"
         android:layout_marginTop="@dimen/dp_12"
         android:contentDescription="@string/main_disability_StrImg"
-        app:srcCompat="@drawable/ic_play" />
+        app:srcCompat="@drawable/ic_played" />
 
     <TextView
         android:id="@+id/tvStart"
@@ -84,8 +84,8 @@
         android:padding="6dp"
         android:layout_marginRight="@dimen/dp_6"
         android:text="8:00"
-        android:textColor="@color/colorMainBlack"
-        android:textSize="@dimen/dp_24" />
+        android:textColor="@color/colorMainGrey"
+        android:textSize="@dimen/dp_16" />
 
     <TextView
         android:id="@+id/tvRemarks"
