@@ -146,7 +146,9 @@ public class UpdateActivity extends AppCompatActivity {
         updateTitle = year + "年" + month + "月" + date + "日" + "(" + day + ")";
         tvUpdateTitle.setText(updateTitle);
         etStrTime_update.setText(start);
-        etEndTime_update.setText(end);
+        if(!"勤務中".equals(end)) {
+            etEndTime_update.setText(end);
+        }
         etDescription_update.setText(remarks);
 
 
