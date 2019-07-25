@@ -1,7 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_110"
+    android:layout_height="@dimen/dp_100"
     android:orientation="horizontal"
     android:id="@+id/listview_maininfo">
 
@@ -17,10 +17,8 @@
         android:id="@+id/tvDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_12"
-        android:gravity="center"
-        android:layout_marginTop="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_8"
+        android:layout_marginStart="@dimen/dp_30"
+        android:layout_centerVertical="true"
         android:text="1"
         android:textColor="@color/colorMainBlack"
         android:textSize="@dimen/dp_10" />
@@ -40,7 +38,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/tvRemarks"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_14"
         android:contentDescription="@string/main_disability_StrImg"
         app:srcCompat="@drawable/ic_played" />
 
@@ -48,12 +46,12 @@
         android:id="@+id/tvStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@id/imgStr"
+        android:layout_marginTop="@dimen/dp_8"
+        android:paddingLeft="@dimen/dp_4"
         android:layout_toEndOf="@id/imgStr"
-        android:padding="6dp"
         android:text="9:30"
         android:textColor="@color/colorMainBlack"
-        android:textSize="@dimen/dp_20" />
+        android:textSize="@dimen/dp_30" />
 
     <ImageView
         android:id="@+id/imgEnd"
@@ -68,33 +66,35 @@
         android:id="@+id/tvEnd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@id/tvStart"
+        android:layout_alignBottom="@id/tvStart"
+        android:paddingLeft="@dimen/dp_4"
         android:layout_alignRight="@id/tvRemarks"
         android:padding="6dp"
         android:text="18:30"
         android:textColor="@color/colorMainBlack"
-        android:textSize="@dimen/dp_20" />
+        android:textSize="@dimen/dp_30" />
 
     <TextView
         android:id="@+id/tvWorked_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_alignBaseline="@id/tvDay"
         android:padding="6dp"
         android:layout_marginRight="@dimen/dp_6"
+        android:layout_centerVertical="true"
         android:text="8:00"
         android:textColor="@color/colorMainGrey"
-        android:textSize="@dimen/dp_16" />
+        android:textSize="@dimen/dp_20" />
 
     <TextView
         android:id="@+id/tvRemarks"
         android:layout_width="@dimen/dp_200"
-        android:layout_height="@dimen/dp_36"
+        android:layout_height="@dimen/dp_44"
+        android:paddingTop="@dimen/dp_5"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/imgStr"
         android:text="アンドロイド10倍CFDホーム画面ロードのバグ修正"
-        android:textSize="@dimen/dp_12"
+        android:textSize="@dimen/dp_16"
         android:ellipsize="end"
         android:maxLines="2"
         android:textColor="@color/colorMainGrey"

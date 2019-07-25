@@ -859,7 +859,7 @@ public class MainActivity extends AppCompatActivity
                 updateImage(position, R.drawable.ic_played, R.id.imgStr);
             }
 
-            if(!end.equals("")) {
+            if(!end.equals("") && !end.equals("勤務中")) {
                 updateImage(position, R.drawable.ic_power_setting, R.id.imgEnd);
             }
 

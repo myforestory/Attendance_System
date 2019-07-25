@@ -214,9 +214,9 @@ public class UpdateActivity extends AppCompatActivity {
             holder.tvDate.setText(maininfo.getDate());
 
             if (maininfo.getDate().length() == 2) {
-                holder.tvDate.setTextSize(getResources().getDimension(R.dimen.dp_12));
+                holder.tvDate.setTextSize(getResources().getDimension(R.dimen.dp_30));
             } else {
-                holder.tvDate.setTextSize(getResources().getDimension(R.dimen.dp_16));
+                holder.tvDate.setTextSize(getResources().getDimension(R.dimen.dp_30));
             }
             holder.tvDay.setText(maininfo.getDay());
             if ("土".equals(maininfo.getDay()) || "日".equals(maininfo.getDay()) || "土".equals(maininfo.getDay())) {

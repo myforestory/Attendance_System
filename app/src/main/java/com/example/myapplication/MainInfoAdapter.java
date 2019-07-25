@@ -104,9 +104,9 @@ public class MainInfoAdapter extends BaseAdapter implements PinnedSectionListVie
             if ("1".equals(maininfo.getDate())){
             }
             if (maininfo.getDate().length() == 2) {
-                holder.tvDate.setTextSize(TypedValue.COMPLEX_UNIT_PX,(int)context.getResources().getDimension(R.dimen.dp_24));
+                holder.tvDate.setTextSize(TypedValue.COMPLEX_UNIT_PX,(int)context.getResources().getDimension(R.dimen.dp_30));
             } else {
-                holder.tvDate.setTextSize(TypedValue.COMPLEX_UNIT_PX, (int)context.getResources().getDimension(R.dimen.dp_30));
+                holder.tvDate.setTextSize(TypedValue.COMPLEX_UNIT_PX, (int)context.getResources().getDimension(R.dimen.dp_36));
             }
             WindowManager winMan = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
             Display display = winMan.getDefaultDisplay();
@@ -150,10 +150,10 @@ public class MainInfoAdapter extends BaseAdapter implements PinnedSectionListVie
             } else if (width < 1300 && width > 1100) {
                 holder.tvRemarks.getLayoutParams().width = (int)context.getResources().getDimension(R.dimen.dp_320);
             }
-            if(!"".equals(maininfo.getStart()) && !"".equals(maininfo.getEnd())) {
+            if(!"".equals(maininfo.getStart()) && (!"".equals(maininfo.getEnd()) && !"勤務中".equals(maininfo.getEnd()))) {
                 holder.imgStr.setBackgroundResource(R.drawable.ic_played);
                 holder.imgEnd.setBackgroundResource(R.drawable.ic_power_setting);
-            } else if (!"".equals(maininfo.getStart()) && "".equals(maininfo.getEnd())) {
+            } else if (!"".equals(maininfo.getStart()) && ("".equals(maininfo.getEnd()) || "勤務中".equals(maininfo.getEnd()))) {
                 holder.imgStr.setBackgroundResource(R.drawable.ic_played);
                 holder.imgEnd.setBackgroundResource(0);
                 holder.tvWorked_time.setText("");
@@ -162,7 +162,6 @@ public class MainInfoAdapter extends BaseAdapter implements PinnedSectionListVie
                 holder.imgEnd.setBackgroundResource(0);
                 holder.tvWorked_time.setText("");
             }
-            //Log.d("width", String.valueOf(width));
         } else {
             if (convertView == null) {
                 holder = new ViewHolder();
