@@ -133,6 +133,11 @@ public class MainInfoAdapter extends BaseAdapter implements PinnedSectionListVie
                 holder.tvStart.setTextColor(context.getResources().getColor(R.color.colorMainBlack));
             }
             holder.tvEnd.setText(maininfo.getEnd());
+            if ("勤務中".equals(maininfo.getEnd())) {
+                holder.tvEnd.setTextColor(context.getResources().getColor(R.color.colorMainRed));
+            } else {
+                holder.tvEnd.setTextColor(context.getResources().getColor(R.color.colorMainBlack));
+            }
             holder.tvWorked_time.setText(maininfo.getWorked_time()+"H");
             if(width < 500) {
                 holder.tvWorked_time.setTextSize(TypedValue.COMPLEX_UNIT_PX,(int)context.getResources().getDimension(R.dimen.dp_18));
@@ -148,6 +153,10 @@ public class MainInfoAdapter extends BaseAdapter implements PinnedSectionListVie
             if(!"".equals(maininfo.getStart()) && !"".equals(maininfo.getEnd())) {
                 holder.imgStr.setBackgroundResource(R.drawable.ic_played);
                 holder.imgEnd.setBackgroundResource(R.drawable.ic_power_setting);
+            } else if (!"".equals(maininfo.getStart()) && "".equals(maininfo.getEnd())) {
+                holder.imgStr.setBackgroundResource(R.drawable.ic_played);
+                holder.imgEnd.setBackgroundResource(0);
+                holder.tvWorked_time.setText("");
             } else {
                 holder.imgStr.setBackgroundResource(0);
                 holder.imgEnd.setBackgroundResource(0);

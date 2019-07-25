@@ -18,9 +18,11 @@
         android:hint="@string/update_hint_etStrTime"
         android:focusable="false"
         android:drawableStart="@drawable/ic_played"
-        android:drawablePadding="@dimen/dp_10"
+        android:drawablePadding="@dimen/dp_12"
         android:paddingLeft="@dimen/dp_12"
         android:paddingRight="@dimen/dp_12"
+        android:paddingBottom="@dimen/dp_10"
+        android:textSize="@dimen/dp_28"
         android:text="" />
 
     <EditText
@@ -34,9 +36,11 @@
         android:hint="@string/update_hint_etStrTime"
         android:focusable="false"
         android:drawableStart="@drawable/ic_power_setting"
-        android:drawablePadding="@dimen/dp_10"
+        android:drawablePadding="@dimen/dp_12"
         android:paddingLeft="@dimen/dp_12"
         android:paddingRight="@dimen/dp_12"
+        android:paddingBottom="@dimen/dp_10"
+        android:textSize="@dimen/dp_28"
         android:text="" />
 
     <EditText
@@ -45,12 +49,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/etEndTime_update"
         android:layout_marginTop="100dp"
-        android:textSize="@dimen/dp_12"
         android:ems="10"
         android:inputType="textMultiLine"
         android:paddingLeft="@dimen/dp_12"
         android:paddingRight="@dimen/dp_12"
         android:hint="@string/update_hint_etDescription_update"
+        android:textSize="@dimen/dp_28"
         android:text="" />
 
 </RelativeLayout>

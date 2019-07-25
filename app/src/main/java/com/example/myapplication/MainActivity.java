@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.SpannableString;
@@ -34,6 +35,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -84,7 +86,7 @@ public class MainActivity extends AppCompatActivity
 
     private final static String logoutUrl = "http://kintai-api.ios.tokyo/user/logout";
     String loginToken, userId, getDataUrl, name, email, finalUpdateTime, updateUrl;
-    String updateYear, updateMonth, updateDate, todayYMD;
+    String updateYear, updateMonth, updateDate, todayYMD, startStatus, endStatus;
     SharedPreferences logoutKey, status;
     int nowYear, nowMonth, nowDate, statusCode, todayPosition, updatePosition, callbackDate, callPosition;
     Boolean isInitial, isUpdate;
@@ -200,13 +202,13 @@ public class MainActivity extends AppCompatActivity
         String dataTime;
 
         Calendar c = Calendar.getInstance();
-//        nowYear = c.get(Calendar.YEAR);
-//        nowMonth = c.get(Calendar.MONTH)+1;
-//        nowDate = c.get(Calendar.DATE);
+        nowYear = c.get(Calendar.YEAR);
+        nowMonth = c.get(Calendar.MONTH)+1;
+        nowDate = c.get(Calendar.DATE);
         ///////////test////////////
-        nowYear = 2019;
-        nowMonth = 07;
-        nowDate = 20;
+//        nowYear = 2019;
+//        nowMonth = 07;
+//        nowDate = 20;
         ///////////test////////////
         updateYear = String.valueOf(nowYear);
         updateMonth = String.valueOf(nowMonth);
@@ -247,16 +249,9 @@ public class MainActivity extends AppCompatActivity
                     try {
                         Log.d("responseBody", responseBody);
                         JSONObject jsonObject = new JSONObject(responseBody);
+                        startStatus = jsonObject.getJSONObject("data").getJSONObject("today").getString("start");
+                        endStatus = jsonObject.getJSONObject("data").getJSONObject("today").getString("end");
                         if(isLegal(jsonObject)) {
-
-                            final String startStatus = jsonObject.getJSONObject("data").getJSONObject("today").getString("start");
-                            final String endStatus = jsonObject.getJSONObject("data").getJSONObject("today").getString("end");
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    todayButtonStatus(startStatus, endStatus);
-                                }
-                            });
 
                             JSONArray monthJsonArray = jsonObject.getJSONObject("data").getJSONArray("days");
                             todayDate = jsonObject.getJSONObject("data").getJSONObject("today").getString("date");
@@ -380,6 +375,12 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                todayButtonStatus(startStatus, endStatus);
+            }
+        }, 30);
         setOnItemClick();
     }
 
@@ -491,11 +492,16 @@ public class MainActivity extends AppCompatActivity
     private void todayButtonStatus(String startStatus, String endStatus){
         if("".equals(startStatus)){
             status.edit().putInt("statusCode", 1).commit();
+            updateColor(todayPosition, R.color.colorMainBlack, R.id.tvEnd);
         } else if (!"".equals(startStatus) && "".equals(endStatus)) {
             status.edit().putInt("statusCode", 2).commit();
-            updateView(todayPosition, "勤務中", R.id.tvEnd);
+            updateText(todayPosition, "勤務中", R.id.tvEnd);
+            updateColor(todayPosition, R.color.colorMainRed, R.id.tvEnd);
+            MainInfo mainInfoItem = mainInfoList.get(todayPosition);
+            mainInfoItem.setEnd("勤務中");
         } else {
             status.edit().putInt("statusCode", 3).commit();
+            updateColor(todayPosition, R.color.colorMainBlack, R.id.tvEnd);
         }
         setBtUpdateAction();
     }
@@ -555,10 +561,13 @@ public class MainActivity extends AppCompatActivity
                                         runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
-                                                updateView(todayPosition, modifyData, R.id.tvStart);
+                                                updateText(todayPosition, modifyData, R.id.tvStart);
                                                 jumpSelectionFromTop(todayPosition);
                                                 MainInfo mainInfoItem = mainInfoList.get(todayPosition);
                                                 mainInfoItem.setStart(modifyData);
+                                                updateText(todayPosition, "勤務中", R.id.tvEnd);
+                                                updateColor(todayPosition, R.color.colorMainRed, R.id.tvEnd);
+                                                mainInfoItem.setEnd("勤務中");
                                             }
                                         });
                                     }
@@ -598,12 +607,12 @@ public class MainActivity extends AppCompatActivity
                                         runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
-                                                updateView(todayPosition, modifyDataEnd, R.id.tvEnd);
+                                                updateText(todayPosition, modifyDataEnd, R.id.tvEnd);
                                                 jumpSelectionFromTop(todayPosition);
                                                 MainInfo mainInfoItem = mainInfoList.get(todayPosition);
                                                 mainInfoItem.setEnd(modifyDataEnd);
                                                 if(!"".equals(modifyDataHours)){
-                                                    updateView(todayPosition, modifyDataHours, R.id.tvWorked_time);
+                                                    updateText(todayPosition, modifyDataHours, R.id.tvWorked_time);
                                                     mainInfoItem.setWorked_time(modifyDataHours);
                                                 }
                                             }
@@ -773,13 +782,34 @@ public class MainActivity extends AppCompatActivity
     }
 
     //修改List上個別資料
-    private void updateView(int index, String modifyData, int dataView){
+    private void updateText(int index, String modifyData, int dataView){
         View v = lvMainInfo.getChildAt(index - lvMainInfo.getFirstVisiblePosition());
 
         if(v == null) { return; }
 
         TextView someText = (TextView) v.findViewById(dataView);
         someText.setText(modifyData);
+    }
+
+    //修改List上個別資料顏色
+    private void updateColor(int index, int color, int dataView){
+        View v = lvMainInfo.getChildAt(index - lvMainInfo.getFirstVisiblePosition());
+
+        if(v == null) { return; }
+
+        TextView someText = (TextView) v.findViewById(dataView);
+        someText.setTextColor(MainActivity.this.getResources().getColor(color));
+    }
+
+    //修改List上個別圖片
+    private void updateImage(int index, int image, int dataView){
+        View v = lvMainInfo.getChildAt(index - lvMainInfo.getFirstVisiblePosition());
+
+        if(v == null) { return; }
+
+        ImageView someText = (ImageView) v.findViewById(dataView);
+        someText.setBackgroundResource(image);
+
     }
 
     //跳至指定item
@@ -815,15 +845,23 @@ public class MainActivity extends AppCompatActivity
             int position = data.getIntExtra("position", 0);
             MainInfo mainInfoItem = mainInfoList.get(position);
 
-            updateView(position, start, R.id.tvStart);
-            updateView(position, end, R.id.tvEnd);
-            updateView(position, remarks, R.id.tvRemarks);
-            updateView(position, working_hours, R.id.tvWorked_time);
+            updateText(position, start, R.id.tvStart);
+            updateText(position, end, R.id.tvEnd);
+            updateText(position, remarks, R.id.tvRemarks);
+            updateText(position, working_hours, R.id.tvWorked_time);
 
             mainInfoItem.setStart(start);
             mainInfoItem.setEnd(end);
             mainInfoItem.setRemarks(remarks);
             mainInfoItem.setWorked_time(working_hours);
+
+            if(!start.equals("")) {
+                updateImage(position, R.drawable.ic_played, R.id.imgStr);
+            }
+
+            if(!end.equals("")) {
+                updateImage(position, R.drawable.ic_power_setting, R.id.imgEnd);
+            }
 
             jumpSelectionFromTop(position);
         }
