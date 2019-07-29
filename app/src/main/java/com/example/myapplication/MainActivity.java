@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -143,12 +144,16 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.back_home) {
             ///////////test////////////
-            btUpdate = findViewById(R.id.btUpdate);
-            status.edit()
-                    .putInt("statusCode", 1)
-                    .commit();
-            setBtUpdateStyle();
+//            btUpdate = findViewById(R.id.btUpdate);
+//            status.edit()
+//                    .putInt("statusCode", 1)
+//                    .commit();
+//            setBtUpdateStyle();
             ///////////test////////////
+
+            Uri uriUrl = Uri.parse("https://marcopolos.co.jp/");
+            Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
+            startActivity(launchBrowser);
 
         } else if (id == R.id.log_out) {
             logout();

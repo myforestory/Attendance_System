@@ -61,7 +61,9 @@
     <dimen name="dp_200">200dp</dimen>
     <dimen name="dp_220">220dp</dimen>
     <dimen name="dp_240">240dp</dimen>
+    <dimen name="dp_260">260dp</dimen>
     <dimen name="dp_280">280dp</dimen>
+    <dimen name="dp_300">300dp</dimen>
     <dimen name="dp_320">320dp</dimen>
     <dimen name="dp_400">400dp</dimen>
 </resources>

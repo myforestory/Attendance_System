@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.content.Context;
 import android.graphics.Point;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
@@ -108,13 +109,19 @@ public class MainInfoAdapter extends BaseAdapter implements PinnedSectionListVie
             } else {
                 holder.tvDate.setTextSize(TypedValue.COMPLEX_UNIT_PX, (int)context.getResources().getDimension(R.dimen.dp_36));
             }
-            WindowManager winMan = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
-            Display display = winMan.getDefaultDisplay();
-            Point size = new Point();
-            display.getSize(size);
+            WindowManager wm = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+            DisplayMetrics dm = new DisplayMetrics();
+            wm.getDefaultDisplay().getMetrics(dm);
+            int width = dm.widthPixels;// 螢幕寬度(畫素)
+            int height= dm.heightPixels; // 螢幕高度(畫素)
+            float density = dm.density;//螢幕密度(0.75 / 1.0 / 1.5)
+            int densityDpi = dm.densityDpi;//螢幕密度dpi(120 / 160 / 240)
+            //螢幕寬度演算法:螢幕寬度(畫素)/螢幕密度
+            int screenWidth = (int) (width/density);//螢幕寬度(dp)
+            int screenHeight = (int)(height/density);//螢幕高度(dp)
+            Log.e("Aloha", screenWidth + "=====" + screenHeight);
 
-            int width = size.x;
-            int height = size.y;
+
             if(width < 500) {
                 RelativeLayout.LayoutParams paramTvDate = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                 paramTvDate.setMargins((int)context.getResources().getDimension(R.dimen.dp_5),0,0,0);
@@ -143,12 +150,12 @@ public class MainInfoAdapter extends BaseAdapter implements PinnedSectionListVie
                 holder.tvWorked_time.setTextSize(TypedValue.COMPLEX_UNIT_PX,(int)context.getResources().getDimension(R.dimen.dp_18));
             }
             holder.tvRemarks.setText(maininfo.getRemarks());
-            if(width < 500) {
-                holder.tvRemarks.getLayoutParams().width = (int)context.getResources().getDimension(R.dimen.dp_180);
-            } else if (width >= 1300) {
-                holder.tvRemarks.getLayoutParams().width = (int)context.getResources().getDimension(R.dimen.dp_220);
-            } else if (width < 1300 && width > 1100) {
-                holder.tvRemarks.getLayoutParams().width = (int)context.getResources().getDimension(R.dimen.dp_320);
+            if(screenWidth < 370) {
+                holder.tvRemarks.getLayoutParams().width = (int)context.getResources().getDimension(R.dimen.dp_240);
+            } else if (screenWidth >= 370 && screenWidth < 420) {
+                holder.tvRemarks.getLayoutParams().width = (int)context.getResources().getDimension(R.dimen.dp_240);
+            } else if (width >= 420) {
+                holder.tvRemarks.getLayoutParams().width = (int)context.getResources().getDimension(R.dimen.dp_300);
             }
             if(!"".equals(maininfo.getStart()) && (!"".equals(maininfo.getEnd()) && !"勤務中".equals(maininfo.getEnd()))) {
                 holder.imgStr.setBackgroundResource(R.drawable.ic_played);
