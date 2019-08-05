@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity
 //            setBtUpdateStyle();
             ///////////test////////////
 
-            Uri uriUrl = Uri.parse("https://marcopolos.co.jp/");
+            Uri uriUrl = Uri.parse(" ");
             Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
             startActivity(launchBrowser);
 
