@@ -206,14 +206,14 @@ public class MainActivity extends AppCompatActivity
     private void setInitialMainInfo() {
         String dataTime;
 
-        Calendar c = Calendar.getInstance();
-        nowYear = c.get(Calendar.YEAR);
-        nowMonth = c.get(Calendar.MONTH)+1;
-        nowDate = c.get(Calendar.DATE);
+//        Calendar c = Calendar.getInstance();
+//        nowYear = c.get(Calendar.YEAR);
+//        nowMonth = c.get(Calendar.MONTH)+1;
+//        nowDate = c.get(Calendar.DATE);
         ///////////test////////////
-//        nowYear = 2019;
-//        nowMonth = 07;
-//        nowDate = 20;
+        nowYear = 2019;
+        nowMonth = 07;
+        nowDate = 20;
         ///////////test////////////
         updateYear = String.valueOf(nowYear);
         updateMonth = String.valueOf(nowMonth);
